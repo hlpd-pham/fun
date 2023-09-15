@@ -1,7 +1,7 @@
 ## RSS Feed Reader
 
 ### Prerequisite
-`pip3 install feedparser requests`
+`pip3 install feedparser requests aiohttp aiohttp[speedups] aiodns`
 
 ### Sample JSON
 ```json
@@ -18,7 +18,7 @@
 
 ### Sample Run
 ```bash
-$ python runner.py -i rss_options.json
+$ python3 runner.py -i rss_options.json
 Feed Author: TechCrunch
 Title: Former WarnerMedia CEO Jason Kilar joins Roblox’s board
 Link: https://techcrunch.com/2023/09/15/former-warnermedia-ceo-jason-kilar-joins-robloxs-board/
@@ -38,9 +38,9 @@ Published: Thu, 14 Sep 2023 15:30:13 GMT
 
 
 Feed Author: HackerNews
-Title: Repeat after me: building any new homes reduces housing costs for all
-Link: https://www.ft.com/content/86836af4-6b52-49e8-a8f0-8aec6181dbc5
-Published: Fri, 15 Sep 2023 15:15:41 +0000
+Title: Artificial intelligence can revolutionise science
+Link: https://www.economist.com/leaders/2023/09/14/how-artificial-intelligence-can-revolutionise-science
+Published: Fri, 15 Sep 2023 15:37:59 +0000
 
 
 Feed Author: LeadDev
