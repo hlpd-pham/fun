@@ -1,0 +1,11 @@
+- problem statement: followers have a fixed budget for creators when they donate
+- speculation: there are no tools for followers to divide donation budget to their liking
+
+- requirements: build a tool to help followers calulate how much money they want to donate to their creators
+every month
+
+maybe build a cli tool first
+
+then expand the logic as an api backend with swaggers
+
+then expand to a web frontend
