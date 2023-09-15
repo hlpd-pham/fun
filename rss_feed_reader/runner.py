@@ -29,8 +29,10 @@ def main():
     try:
         with open(args.input, 'r') as input_file:
             parse_rss_feeds(json.load(input_file))
+    except FileNotFoundError:
+        print(f"Input file not found: {args.input}")
     except Exception as e:
-        print(f"Encounter error for input: {input_json}, err: {err}")
+        print(f"Encounter error for input: {args.input}, err: {e}")
 
 
 if __name__ == "__main__":
