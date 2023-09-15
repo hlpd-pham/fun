@@ -5,32 +5,43 @@ import feedparser
 import json
 import requests
 
-def get_latest_entry(feed_url, timeout_duration=10):
+async def fetch_feed(session, feed_url, timeout_duration=10):
     try:
-        response = requests.get(feed_url, timeout=timeout_duration)
-        # Raises an HTTPError if the HTTP request returned an unsuccessful status code.
-        response.raise_for_status()  
-        feed = feedparser.parse(response.content)
-        if feed.entries:
-            return feed.entries[0]
-    except requests.Timeout:
+        async with session.get(feed_url, timeout=timeout_duration) as response:
+            if response.status == 200:
+                return await response.text()
+            else:
+                print(f"Error {response.status} while fetching {feed_url}")
+    except asyncio.TimeoutError:
         print(f"Timeout occurred for {feed_url}")
-    except requests.RequestException as e:  # This will catch any other exceptions from requests.
+    except Exception as e:
         print(f"Error fetching {feed_url}. Error: {e}")
     return None
 
-def parse_rss_feeds(rss_feeds):
-    for feed_author in rss_feeds:
-        feed_url = rss_feeds[feed_author]
-        entry = get_latest_entry(feed_url)
+async def get_latest_entry(feed_url, timeout_duration=10):
+    async with aiohttp.ClientSession() as session:
+        content = await fetch_feed(session, feed_url, timeout_duration)
+        if content:
+            feed = feedparser.parse(content)
+            if feed.entries:
+                return feed.entries[0]
+    return None
+
+async def parse_rss_feeds(rss_feeds):
+    tasks = [get_latest_entry(feed_url) for feed_url in rss_feeds.values()]
+
+    results = await asyncio.gather(*tasks)
+
+    for feed_author, entry in zip(rss_feeds.keys(), results):
         if entry:
             print(f"Feed Author: {feed_author}")
             print(f"Title: {entry.title}")
             print(f"Link: {entry.link}")
             print(f"Published: {entry.published}")
         else:
-            print(f"No entries found for feed: {feed_url}")
+            print(f"No entries found for feed: {rss_feeds[feed_author]}")
         print('\n')
+
 
 def main():
     parser = argparse.ArgumentParser(description='Get first article from each RSS feed')
@@ -39,7 +50,7 @@ def main():
 
     try:
         with open(args.input, 'r') as input_file:
-            parse_rss_feeds(json.load(input_file))
+            asyncio.run(parse_rss_feeds(json.load(input_file)))
     except FileNotFoundError:
         print(f"Input file not found: {args.input}")
     except Exception as e:
