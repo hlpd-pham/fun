@@ -1,11 +1,22 @@
 import argparse
+import aiohttp
+import asyncio
 import feedparser
 import json
+import requests
 
-def get_latest_entry(feed_url):
-    feed = feedparser.parse(feed_url)
-    if feed.entries:
-        return feed.entries[0]
+def get_latest_entry(feed_url, timeout_duration=10):
+    try:
+        response = requests.get(feed_url, timeout=timeout_duration)
+        # Raises an HTTPError if the HTTP request returned an unsuccessful status code.
+        response.raise_for_status()  
+        feed = feedparser.parse(response.content)
+        if feed.entries:
+            return feed.entries[0]
+    except requests.Timeout:
+        print(f"Timeout occurred for {feed_url}")
+    except requests.RequestException as e:  # This will catch any other exceptions from requests.
+        print(f"Error fetching {feed_url}. Error: {e}")
     return None
 
 def parse_rss_feeds(rss_feeds):

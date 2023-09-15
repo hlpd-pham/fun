@@ -1,7 +1,7 @@
 ## RSS Feed Reader
 
 ### Prerequisite
-`pip3 install feedparser`
+`pip3 install feedparser requests`
 
 ### Sample JSON
 ```json
