@@ -1,3 +1,5 @@
+#!/opt/homebrew/bin/python3
+
 '''
 The newly-improved calibration document consists of lines of text; 
 each line originally contained a specific calibration value that the 
@@ -16,9 +18,11 @@ Adding these together produces 142.
 
 Consider your entire calibration document. What is the sum of all of 
 the calibration values?
+
+approach: use 2 pointers to find the first digit encounter for each line
 '''
 
-input_file_path = 'input.txt'
+import argparse
 
 def solve(lines):
     total = 0
@@ -40,9 +44,19 @@ def solve(lines):
     return total
 
 
-try:
-    with open(input_file_path, 'r') as input_file:
-        lines = [line.strip() for line in input_file]
-        print(solve(lines))
-except FileNotFoundError:
-    print(f"File {input_file_path} not found")
+def main():
+    parser = argparse.ArgumentParser(description='Advent of code day 1 part 1')
+    parser.add_argument('-i', '--input', required=True)
+    args = parser.parse_args()
+
+    try:
+        with open(args.input, 'r') as input_file:
+            lines = [line.strip() for line in input_file]
+            print(solve(lines))
+    except FileNotFoundError:
+        print(f"Input file not found: {args.input}")
+    except Exception as e:
+        print(f"Encounter error for input: {args.input}, err: {e}")
+
+if __name__ == "__main__":
+    main()
