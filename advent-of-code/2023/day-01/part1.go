@@ -36,7 +36,10 @@ func main() {
     lines = append(lines, line)
   }
 
-  solve(lines)
+  if err := solve(lines); err != nil {
+    fmt.Println("Error trying to solve from input:", err)
+  }
+  
 
   if err := scanner.Err(); err != nil {
     fmt.Println("Error reading file:", err)
