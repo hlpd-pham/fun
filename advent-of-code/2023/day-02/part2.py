@@ -1,8 +1,10 @@
+
 #!/opt/homebrew/bin/python3
 
 import argparse
 import traceback
 import re
+import math
 
 def solve(lines):
     '''
@@ -10,13 +12,12 @@ def solve(lines):
     exit if we do, increment the total if we exit inner loop normally
     '''
     total = 0
-    threshold = {'red': 12, 'green': 13, 'blue': 14}
     for id, game in enumerate(lines, start=1):
+        threshold = {'red': 0, 'green': 0, 'blue': 0}
         for n, color in re.findall(r'(\d+) (red|green|blue)', game):
-            if threshold[color] < int(n):
-                break
-        else:
-            total += id
+            threshold[color] = max(int(n), threshold[color])
+        total += math.prod(threshold.values())
+
     return total
         
 
