@@ -52,7 +52,7 @@ def create_report(csv_file, cc_type):
 
 if __name__ == "__main__":
     # Argument parser setup
-    parser = argparse.ArgumentParser(description="Run spending activity repot")
+    parser = argparse.ArgumentParser(description="Run spending activity report")
     parser.add_argument("-c", "--csv", help="CSV input file", type=str, required=True)
     parser.add_argument("-t", "--type", help="CC provider type", type=str, required=True, choices=ALLOWED_CC_TYPES)
     args = parser.parse_args()
