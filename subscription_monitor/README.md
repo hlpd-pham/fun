@@ -10,9 +10,10 @@
 
 ## Create Report from CSV
 
-usage: activity.py [-h] -c CSV -t {amex,chase}
 
 ```bash
+usage: activity.py [-h] -c CSV -t {amex,chase}
+
 Run spending activity report
 
 options:
