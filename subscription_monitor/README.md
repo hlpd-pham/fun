@@ -13,7 +13,7 @@
 usage: activity.py [-h] -c CSV -t {amex,chase}
 
 ```bash
-Run spending activity repot
+Run spending activity report
 
 options:
   -h, --help            show this help message and exit
