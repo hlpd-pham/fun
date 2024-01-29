@@ -7,12 +7,7 @@ CHASE = 'chase'
 ALLOWED_CC_TYPES = [AMEX, CHASE]
 ROW_SEPARATORS = '------------------------------------------------------------'
 
-def validate_cc_type(cc_type):
-    if cc_type not in ALLOWED_CC_TYPES:
-        raise ValueError('cc type must be amex or chase')
-
 def create_amex_report(df):
-
     pattern = r'MOBILE PAYMENT - THANK YOU'
     mask = df.Description.str.contains(pattern, regex = True)
     df_filtered = df[~mask]
@@ -42,7 +37,6 @@ def crease_chase_report(df):
 
 
 def create_report(csv_file, cc_type):
-    validate_cc_type(cc_type)
     df = pd.read_csv(csv_file)
     print('Report Type:', cc_type.upper())
     if cc_type == AMEX:
