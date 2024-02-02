@@ -27,16 +27,16 @@ def crease_chase_report(df):
     chase_pattern = r'Payment Thank You-Mobile'
     chase_mask = df.Description.str.contains(chase_pattern, regex=True)
     chase_filtered = df[~chase_mask]
-    costco = chase_filtered[chase_filtered.Description.str.contains("COSTCO")]
-    amzn = chase_filtered[chase_filtered.Description.str.contains("AMZN")]
-    others_mask = chase_filtered.Description.str.contains("COSTCO") && chase_filtered.Description.str.contains("AMZN")
-    others = chase_filtered[~others_mask]
+    costco_mask = chase_filtered.Description.str.contains("COSTCO")
+    costco = chase_filtered[costco_mask]
+    amzn = chase_filtered[chase_filtered.Description.apply(lambda x: any(element in x for element in ['AMZN', 'Amazon']))]
+    others = chase_filtered[~chase_filtered.Description.apply(lambda x: any(element in x for element in ['AMZN', 'Amazon','COSTCO']))]
 
-    print(f'{ROW_SEPARATORS}\nCOSTCO: {sum(costco.Amount)}')
+    print(f'{ROW_SEPARATORS}\nCOSTCO: {sum(costco.Amount):.2f}')
     print(costco)
-    print(f'{ROW_SEPARATORS}\nAMZN: {sum(amzn.Amount)}')
+    print(f'{ROW_SEPARATORS}\nAMZN: {sum(amzn.Amount):.2f}')
     print(amzn)
-    print(f'{ROW_SEPARATORS}\nOthers: {sum(others.Amount)}')
+    print(f'{ROW_SEPARATORS}\nOthers: {sum(others.Amount):.2f}')
     print(others)
 
 
