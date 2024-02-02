@@ -2,7 +2,7 @@
 
 ### Prerequisite
 
-`pip3 install PyPDF2`
+`pip3 install PyPDF2 pandas argparse`
 
 ## Create Report from Amex PDF Statement
 
