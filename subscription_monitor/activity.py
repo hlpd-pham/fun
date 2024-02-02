@@ -23,7 +23,7 @@ def create_amex_report(df):
 def crease_chase_report(df):
     columns = ['Transaction Date', 'Description', 'Amount']
     df = df[columns]
-    df.loc[:, 'Amount'] = df.Amount.abs()
+    df.loc[:, 'Amount'] = df.Amount * -1
     chase_pattern = r'Payment Thank You-Mobile'
     chase_mask = df.Description.str.contains(chase_pattern, regex=True)
     chase_filtered = df[~chase_mask]
