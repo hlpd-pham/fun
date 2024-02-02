@@ -29,11 +29,16 @@ def crease_chase_report(df):
     chase_filtered = df[~chase_mask]
     costco = chase_filtered[chase_filtered.Description.str.contains("COSTCO")]
     amzn = chase_filtered[chase_filtered.Description.str.contains("AMZN")]
+    others_mask = chase_filtered.Description.str.contains("COSTCO") && chase_filtered.Description.str.contains("AMZN")
+    others = chase_filtered[~others_mask]
 
     print(f'{ROW_SEPARATORS}\nCOSTCO: {sum(costco.Amount)}')
     print(costco)
     print(f'{ROW_SEPARATORS}\nAMZN: {sum(amzn.Amount)}')
     print(amzn)
+    print(f'{ROW_SEPARATORS}\nOthers: {sum(others.Amount)}')
+    print(others)
+
 
 
 def create_report(csv_file, cc_type):
