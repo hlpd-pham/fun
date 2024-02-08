@@ -1,0 +1,8 @@
+{
+  "include": {
+    "root": "src"
+  },
+  "reportArgumentType": "none",
+  "reportGeneralTypeIssues": "none",
+  "typeCheckingMode": "basic"
+}
