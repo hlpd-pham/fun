@@ -1,5 +1,6 @@
 from aenum import Enum, NoAlias
 
+
 class CardDealAmount(Enum):
     _settings_ = NoAlias
 
@@ -22,13 +23,14 @@ class Card:
         self.suite = suite
         self.value = value
 
-
     def __str__(self) -> str:
         return f"{self.__class__.__name__}({self.get_face_card_value()}, {self.suite})"
 
-
     def get_face_card_value(self):
-        special_values = { 1: 'Ace', 11: 'Jack', 12: 'Queen', 13: 'King', }
+        special_values = {
+            1: "Ace",
+            11: "Jack",
+            12: "Queen",
+            13: "King",
+        }
         return special_values.get(self.value, self.value)
-
-

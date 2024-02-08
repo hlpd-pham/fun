@@ -1,10 +1,17 @@
-import pytest
 import logging
+
+import pytest
 
 
 def pytest_configure(config):
     # Configure logging
-    logging.basicConfig(level=logging.DEBUG, filename='app.log', filemode='w', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(
+        level=logging.DEBUG,
+        filename="app.log",
+        filemode="w",
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
+
 
 @pytest.fixture(autouse=True, scope="session")
 def setup_session():
@@ -12,4 +19,3 @@ def setup_session():
     print("Test session setup")
     yield
     print("Test session teardown")
-
