@@ -20,11 +20,8 @@ class Suite(Enum):
 
 class Card:
     def __init__(self, suite: Suite = Suite.SPADE, value: int = 1):
-        self.suite = suite
-        self.value = value
-
-    def __str__(self) -> str:
-        return f"{self.__class__.__name__}({self.get_face_card_value()}, {self.suite})"
+        self.suite: Suite = suite
+        self.value: int = value
 
     def get_face_card_value(self):
         special_values = {
@@ -34,3 +31,10 @@ class Card:
             13: "King",
         }
         return special_values.get(self.value, self.value)
+
+    def get_card_value_suite(self):
+        return self.value, self.suite
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}({self.get_face_card_value()}, {self.suite})"
+

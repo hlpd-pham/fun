@@ -1,3 +1,4 @@
+import logging
 import random
 from collections import defaultdict
 from enum import Enum
@@ -21,7 +22,6 @@ class HandResult(Enum):
 
 
 class Game:
-    separators = "---------------"
 
     def __init__(self, num_players=1, debug=False):
         if num_players < 0 or num_players > 8:
@@ -29,9 +29,15 @@ class Game:
         self._debug: bool = debug
         self.players: List[List[Card]] = []
         self.board: List[Card] = []
-        self.deck: List[Card] = ALL_CARDS.copy()
-        random.shuffle(self.deck)
+        self.deck, self.deck_hash = self._get_deck()
         self._dealing_to_players(num_players)
+
+
+    def _get_deck(self):
+        deck = ALL_CARDS.copy()
+        random.shuffle(deck)
+        deck_hash = { card.get_card_value_suite(): True for card in deck }
+        return deck, deck_hash
 
     def _get_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
         return []
@@ -105,31 +111,32 @@ class Game:
     def _deal_card(
         self, announcement: str, dealing_type: CardDealAmount, is_show=False
     ) -> List[Card]:
-        print(announcement, end=" - ")
-        cards_dealt = random.sample(self.deck, dealing_type.value)
+        logging.info(announcement)
+        cards_dealt: List[Card] = random.sample(self.deck, dealing_type.value)
         if self._debug or is_show:
-            print([str(c) for c in cards_dealt])
-        for c in cards_dealt:
-            self.deck.remove(c)
+            logging.info([str(c) for c in cards_dealt])
+        for card in cards_dealt:
+            if card.get_card_value_suite() not in self.deck_hash:
+                raise ValueError(f"card {card} is not in deck")
+            del self.deck_hash[card.get_card_value_suite()]
+        self.deck = list(self.deck_hash.keys())
         return cards_dealt
 
     def _dealing_to_players(self, num_players):
-        print("deal cards to players")
+        logging.info("deal cards to players")
         for i in range(num_players):
             player_cards = self._deal_card(
                 f"dealing cards for player {i}", CardDealAmount.PLAYER, False
             )
             self.players.append(player_cards)
-        print(Game.separators)
 
     def dealing_to_board(self, dealing_type: CardDealAmount):
         self._deal_card(f"burn 1 for {dealing_type}", CardDealAmount.BURN, False)
         cards_dealt = self._deal_card(f"{dealing_type}", dealing_type, False)
         self.board.extend(cards_dealt)
-        print(Game.separators)
 
     def get_board(self):
         if self._debug:
-            print("board cards")
-            print([str(c) for c in self.board])
+            logging.info("board cards")
+            logging.info([str(c) for c in self.board])
         return self.board
