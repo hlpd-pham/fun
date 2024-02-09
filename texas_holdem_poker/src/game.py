@@ -29,8 +29,8 @@ class Game:
         self._debug: bool = debug
         self.players: List[List[Card]] = []
         self.board: List[Card] = []
-        self.game_cards: List[Card] = ALL_CARDS.copy()
-        random.shuffle(self.game_cards)
+        self.deck: List[Card] = ALL_CARDS.copy()
+        random.shuffle(self.deck)
         self._dealing_to_players(num_players)
 
     def _get_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
@@ -106,11 +106,11 @@ class Game:
         self, announcement: str, dealing_type: CardDealAmount, is_show=False
     ) -> List[Card]:
         print(announcement, end=" - ")
-        cards_dealt = random.sample(self.game_cards, dealing_type.value)
+        cards_dealt = random.sample(self.deck, dealing_type.value)
         if self._debug or is_show:
             print([str(c) for c in cards_dealt])
         for c in cards_dealt:
-            self.game_cards.remove(c)
+            self.deck.remove(c)
         return cards_dealt
 
     def _dealing_to_players(self, num_players):
