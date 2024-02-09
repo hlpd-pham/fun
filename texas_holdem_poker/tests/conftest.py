@@ -16,6 +16,13 @@ def pytest_configure(config):
 @pytest.fixture(autouse=True, scope="session")
 def setup_session():
     # Setup code that runs once before any tests
-    print("Test session setup")
+    logging.info("Test session setup")
     yield
-    print("Test session teardown")
+    logging.info("Test session teardown")
+
+
+@pytest.fixture(autouse=True, scope="function")
+def setup_teardown_module():
+    logging.info("Setup for function")
+    yield
+    logging.info("Teardown for function")

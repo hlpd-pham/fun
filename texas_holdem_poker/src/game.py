@@ -32,11 +32,10 @@ class Game:
         self.deck, self.deck_hash = self._get_deck()
         self._dealing_to_players(num_players)
 
-
     def _get_deck(self):
         deck = ALL_CARDS.copy()
         random.shuffle(deck)
-        deck_hash = { card.get_card_value_suite(): True for card in deck }
+        deck_hash = {card.get_card_value_suite(): True for card in deck}
         return deck, deck_hash
 
     def _get_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:

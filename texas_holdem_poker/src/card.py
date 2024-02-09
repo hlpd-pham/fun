@@ -37,4 +37,3 @@ class Card:
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}({self.get_face_card_value()}, {self.suite})"
-
