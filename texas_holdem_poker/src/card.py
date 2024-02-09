@@ -19,9 +19,9 @@ class Suite(Enum):
 
 
 class Card:
-    def __init__(self, suite: Suite = Suite.SPADE, value: int = 1):
-        self.suite: Suite = suite
+    def __init__(self, value: int = 1, suite: Suite = Suite.SPADE):
         self.value: int = value
+        self.suite: Suite = suite
 
     def get_face_card_value(self):
         special_values = {

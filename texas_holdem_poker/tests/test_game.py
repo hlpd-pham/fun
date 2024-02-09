@@ -21,7 +21,7 @@ class TestGame:
 
     def make_mock_cards(self, mock_type: MockCardType):
         def mock_cards(*args, **kwargs):
-            DEFAULT_RET = [Card(Suite.DIAMOND, 2), Card(Suite.CLUB, 2)]
+            ret = []
             match mock_type:
                 case MockCardType.FLOP:
                     ret = []
@@ -32,10 +32,12 @@ class TestGame:
                             ret = mock_card_options[2:3]  # burn for flop
                         case 2:
                             ret = mock_card_options[3:6]  # flop
+                        case 3:
+                            ret = mock_card_options[3:6]  # flop
                         case _:
-                            ret = DEFAULT_RET
-                case _:
-                    ret = DEFAULT_RET
+                            ret = []
+                case MockCardType.START:
+                    ret = mock_card_options[:2]  # deal to player
             self.call_count += 1
             return ret
 
@@ -58,13 +60,13 @@ class TestGame:
         logging.info("Teardown after each test")
         # Here you can add any necessary cleanup logic. For this example, there's nothing specific to clean up,
         # but you might want to reset states, delete files, close connections, etc.
+        self.call_count = 0
 
     def test_game_init(self):
-        game_obj = Game(num_players=1, debug=True)
-        assert len(game_obj.players) == 1
-        assert len(game_obj.deck) == 50
-        assert len(game_obj.get_board()) == 0
-        assert game_obj._debug
+        assert len(self.game_instance.players) == 1
+        assert len(self.game_instance.deck) == 50
+        assert len(self.game_instance.get_board()) == 0
+        assert self.game_instance._debug
 
     def test_dealing_to_board_flop(self):
         with patch(
