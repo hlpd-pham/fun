@@ -1,6 +1,8 @@
 from typing import List
-import pytest
 from unittest.mock import patch
+
+import pytest
+
 from card import Card, CardDealAmount, Suite
 from game import Game
 
