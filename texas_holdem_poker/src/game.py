@@ -136,6 +136,5 @@ class Game:
 
     def get_board(self):
         if self._debug:
-            logging.info("board cards")
-            logging.info([str(c) for c in self.board])
+            logging.info(f"board cards - {[str(c) for c in self.board]}")
         return self.board
