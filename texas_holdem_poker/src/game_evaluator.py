@@ -1,4 +1,3 @@
-import functools
 import logging
 from collections import defaultdict
 from typing import List
@@ -11,7 +10,6 @@ class GameEvaluator:
     """This class always assume player cards have 7 cards to make it simple"""
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_pair_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
@@ -26,7 +24,6 @@ class GameEvaluator:
         return []
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_two_pair_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         hand_cards = sorted(all_player_cards.copy())
@@ -45,7 +42,6 @@ class GameEvaluator:
         return two_pairs
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_three_of_a_kind_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
@@ -62,7 +58,6 @@ class GameEvaluator:
         return []
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_straight_cards(
         cls, all_player_cards: List[Card], get_all_cards=False
     ) -> List[Card]:
@@ -125,7 +120,6 @@ class GameEvaluator:
         return []
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_flush_cards(
         cls, all_player_cards: List[Card], get_all_cards=False
     ) -> List[Card]:
@@ -157,7 +151,6 @@ class GameEvaluator:
         return []
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_full_house_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         hand_cards = all_player_cards.copy()
@@ -189,7 +182,6 @@ class GameEvaluator:
         return result
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_four_of_a_kind_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
@@ -206,7 +198,6 @@ class GameEvaluator:
         return []
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_straight_flush_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         straight_cards = GameEvaluator.get_straight_cards(
@@ -236,7 +227,6 @@ class GameEvaluator:
         return straight_flush_cards
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_royal_flush_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         straight_flush_cards = GameEvaluator.get_straight_flush_cards(all_player_cards)
