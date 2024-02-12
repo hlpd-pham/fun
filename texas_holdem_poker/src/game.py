@@ -1,3 +1,4 @@
+import functools
 import logging
 import random
 from collections import defaultdict
@@ -6,6 +7,7 @@ from typing import List
 
 from card import Card, CardDealAmount
 from constants import ALL_CARDS
+from game_evaluator import GameEvaluator
 
 
 class HandResult(Enum):
@@ -38,74 +40,35 @@ class Game:
         deck_hash = {card.get_card_value_suite(): True for card in deck}
         return deck, deck_hash
 
-    def _get_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
-        return []
+    @functools.lru_cache(maxsize=None)
+    def _evaluate_hand(self, all_player_cards: List[Card]) -> tuple[HandResult, List[Card]]:
+        if GameEvaluator.get_royal_flush_cards(all_player_cards):
+            return HandResult.ROYAL_FLUSH, GameEvaluator.get_royal_flush_cards(all_player_cards)
 
-    def _get_two_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
-        return []
+        elif GameEvaluator.get_four_of_a_kind_cards(all_player_cards):
+            return HandResult.FOUR_OF_A_KIND, GameEvaluator.get_four_of_a_kind_cards(all_player_cards)
 
-    def _get_three_of_a_kind_cards(self, all_player_cards: List[Card]) -> List[Card]:
-        return []
+        elif GameEvaluator.get_full_house_cards(all_player_cards):
+            return HandResult.FULL_HOUSE, GameEvaluator.get_full_house_cards(all_player_cards)
 
-    def _get_straight_cards(self, all_player_cards: List[Card]) -> List[Card]:
-        """
-        only return the highest straight cards
-        """
-        return []
+        elif GameEvaluator.get_flush_cards(all_player_cards):
+            return HandResult.FLUSH, GameEvaluator.get_flush_cards(all_player_cards)
 
-    def _get_flush_cards(self, all_player_cards: List[Card]) -> List[Card]:
-        """
-        only return the highest flush cards
-        """
-        return []
+        elif GameEvaluator.get_straight_cards(all_player_cards):
+            return HandResult.STRAIGHT, GameEvaluator.get_straight_cards(all_player_cards)
 
-    def _get_full_house_cards(self, all_player_cards: List[Card]) -> List[Card]:
-        hand_cards = all_player_cards.copy()
-        three_of_a_kind_cards = self._get_three_of_a_kind_cards(hand_cards)
-        if len(three_of_a_kind_cards) == 0:
-            return []
-        for c in three_of_a_kind_cards:
-            hand_cards.remove(c)
-        pair_cards = self._get_pair_cards(hand_cards)
-        if len(pair_cards) == 0:
-            return []
-        return three_of_a_kind_cards + pair_cards
+        elif GameEvaluator.get_three_of_a_kind_cards(all_player_cards):
+            return HandResult.THREE_OF_A_KIND, GameEvaluator.get_three_of_a_kind_cards(all_player_cards)
 
-    def _is_four_of_a_kind(self, all_player_cards: List[Card]) -> List[Card]:
-        value_cards_map = defaultdict(list)
-        for c in all_player_cards:
-            value_cards_map[c.value].append(c)
-            if len(value_cards_map[c.value]) == 4:
-                return value_cards_map[c.value]
-        return []
+        elif GameEvaluator.get_two_pair_cards(all_player_cards):
+            return HandResult.TWO_PAIRS, GameEvaluator.get_two_pair_cards(all_player_cards)
 
-    def _get_straight_flush_cards(self, all_player_cards: List[Card]) -> List[Card]:
-        straight_cards = sorted(
-            self._get_straight_cards(all_player_cards),
-            key=lambda card: (card.value, card.suite),
-        )
-        flush_cards = sorted(
-            self._get_flush_cards(all_player_cards),
-            key=lambda card: (card.value, card.suite),
-        )
-        if straight_cards != flush_cards:
-            return []
-        return straight_cards
+        elif GameEvaluator.get_pair_cards(all_player_cards):
+            return HandResult.PAIR, GameEvaluator.get_pair_cards(all_player_cards)
 
-    def _get_royal_flush_cards(self, all_player_cards: List[Card]) -> List[Card]:
-        straight_flush_cards = self._get_straight_flush_cards(all_player_cards)
-        straight_flush_card_values = set([c.value for c in straight_flush_cards])
-
-        ROYAL_FLUSH_VALUES = set([10, 11, 12, 13, 1])
-        if ROYAL_FLUSH_VALUES <= straight_flush_card_values:
-            return straight_flush_cards
-        return []
-
-    def _evaluate_hand(self, all_player_cards: List[Card]) -> HandResult:
-        if self._get_royal_flush_cards(all_player_cards):
-            return HandResult.ROYAL_FLUSH
-
-        return HandResult.HIGH_CARD
+        sorted_cards = sorted(all_player_cards, key=lambda card: card.value)
+        highest_card = sorted_cards[-1] if sorted_cards[0] != 1 else sorted_cards[0]
+        return HandResult.HIGH_CARD, [highest_card]
 
     def _deal_card(
         self, announcement: str, dealing_type: CardDealAmount, is_show=False

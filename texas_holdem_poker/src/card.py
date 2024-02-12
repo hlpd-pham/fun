@@ -12,10 +12,12 @@ class CardDealAmount(Enum):
 
 
 class Suite(Enum):
+    _settings_ = NoAlias
+
     HEART = 1
-    DIAMOND = 2
-    CLUB = 3
-    SPADE = 4
+    DIAMOND = 1
+    CLUB = 1
+    SPADE = 1
 
 
 class Card:
