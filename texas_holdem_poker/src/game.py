@@ -7,7 +7,6 @@ from typing import List
 from card import Card, CardDealAmount
 from constants import ALL_CARDS
 from game_evaluator import GameEvaluator
-from utils.strings import to_string
 
 
 class HandResult(Enum):
@@ -41,55 +40,44 @@ class Game:
         return deck, deck_hash
 
     @functools.lru_cache(maxsize=None)
-    def evaluate_hand(
+    def _evaluate_hand(
         self, all_player_cards: List[Card]
     ) -> tuple[HandResult, List[Card]]:
-        if len(all_player_cards) != 7:
-            err_message = f"found more than 7 cards in player's hand {to_string(all_player_cards)}"
-            logging.error(err_message)
-            raise ValueError(err_message)
-        hand_result, result_cards = HandResult.HIGH_CARD, []
-        if GameEvaluator.get_pair_cards(all_player_cards):
-            hand_result, result_cards = HandResult.PAIR, GameEvaluator.get_pair_cards(
-                all_player_cards
-            )
-        if GameEvaluator.get_two_pair_cards(all_player_cards):
-            hand_result, result_cards = (
-                HandResult.TWO_PAIRS,
-                GameEvaluator.get_two_pair_cards(all_player_cards),
-            )
-        if GameEvaluator.get_straight_cards(all_player_cards):
-            hand_result, result_cards = (
-                HandResult.STRAIGHT,
-                GameEvaluator.get_straight_cards(all_player_cards),
-            )
-        if GameEvaluator.get_three_of_a_kind_cards(all_player_cards):
-            hand_result, result_cards = (
-                HandResult.THREE_OF_A_KIND,
-                GameEvaluator.get_three_of_a_kind_cards(all_player_cards),
-            )
-        if GameEvaluator.get_flush_cards(all_player_cards):
-            hand_result, result_cards = HandResult.FLUSH, GameEvaluator.get_flush_cards(
-                all_player_cards
-            )
-        if GameEvaluator.get_full_house_cards(all_player_cards):
-            hand_result, result_cards = (
-                HandResult.FULL_HOUSE,
-                GameEvaluator.get_full_house_cards(all_player_cards),
-            )
-        if GameEvaluator.get_four_of_a_kind_cards(all_player_cards):
-            hand_result, result_cards = (
-                HandResult.FOUR_OF_A_KIND,
-                GameEvaluator.get_four_of_a_kind_cards(all_player_cards),
-            )
         if GameEvaluator.get_royal_flush_cards(all_player_cards):
-            hand_result, result_cards = (
-                HandResult.ROYAL_FLUSH,
-                GameEvaluator.get_royal_flush_cards(all_player_cards),
+            return HandResult.ROYAL_FLUSH, GameEvaluator.get_royal_flush_cards(
+                all_player_cards
             )
 
-        if hand_result != HandResult.HIGH_CARD:
-            return hand_result, result_cards
+        elif GameEvaluator.get_four_of_a_kind_cards(all_player_cards):
+            return HandResult.FOUR_OF_A_KIND, GameEvaluator.get_four_of_a_kind_cards(
+                all_player_cards
+            )
+
+        elif GameEvaluator.get_full_house_cards(all_player_cards):
+            return HandResult.FULL_HOUSE, GameEvaluator.get_full_house_cards(
+                all_player_cards
+            )
+
+        elif GameEvaluator.get_flush_cards(all_player_cards):
+            return HandResult.FLUSH, GameEvaluator.get_flush_cards(all_player_cards)
+
+        elif GameEvaluator.get_straight_cards(all_player_cards):
+            return HandResult.STRAIGHT, GameEvaluator.get_straight_cards(
+                all_player_cards
+            )
+
+        elif GameEvaluator.get_three_of_a_kind_cards(all_player_cards):
+            return HandResult.THREE_OF_A_KIND, GameEvaluator.get_three_of_a_kind_cards(
+                all_player_cards
+            )
+
+        elif GameEvaluator.get_two_pair_cards(all_player_cards):
+            return HandResult.TWO_PAIRS, GameEvaluator.get_two_pair_cards(
+                all_player_cards
+            )
+
+        elif GameEvaluator.get_pair_cards(all_player_cards):
+            return HandResult.PAIR, GameEvaluator.get_pair_cards(all_player_cards)
 
         sorted_cards = sorted(all_player_cards, key=lambda card: card.value)
         highest_card = sorted_cards[-1] if sorted_cards[0] != 1 else sorted_cards[0]

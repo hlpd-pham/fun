@@ -1,5 +1,4 @@
 import logging
-
 from card import Card, Suite
 from game_evaluator import GameEvaluator
 from utils.strings import to_string
@@ -182,7 +181,6 @@ def test_straight_happy_path_broadway():
     ]
     result = GameEvaluator.get_straight_cards(hand_cards)
     assert expected == result
-
 
 def test_straight_happy_path_broadway_7_cards():
     hand_cards = [
@@ -446,7 +444,6 @@ def test_straight_flush_happy_path_higher_straight():
     result = GameEvaluator.get_straight_flush_cards(hand_cards)
     assert expected == result
 
-
 def test_straight_flush_happy_path_royal():
     hand_cards = [
         Card(1, Suite.HEART),
@@ -467,7 +464,6 @@ def test_straight_flush_happy_path_royal():
     result = GameEvaluator.get_straight_flush_cards(hand_cards)
     assert expected == result
 
-
 def test_straight_flush_sad_path_no_flush():
     hand_cards = [
         Card(1, Suite.HEART),
@@ -478,10 +474,10 @@ def test_straight_flush_sad_path_no_flush():
         Card(6, Suite.CLUB),
         Card(7, Suite.SPADE),
     ]
-    expected = []
+    expected = [
+    ]
     result = GameEvaluator.get_straight_flush_cards(hand_cards)
     assert expected == result
-
 
 def test_straight_flush_sad_path_no_straight():
     hand_cards = [
@@ -493,10 +489,10 @@ def test_straight_flush_sad_path_no_straight():
         Card(10, Suite.CLUB),
         Card(11, Suite.SPADE),
     ]
-    expected = []
+    expected = [
+    ]
     result = GameEvaluator.get_straight_flush_cards(hand_cards)
     assert expected == result
-
 
 def test_royal_flush_happy_path():
     hand_cards = [
@@ -518,7 +514,6 @@ def test_royal_flush_happy_path():
     result = GameEvaluator.get_royal_flush_cards(hand_cards)
     assert expected == result
 
-
 def test_royal_flush_sad_path():
     hand_cards = [
         Card(1, Suite.HEART),
@@ -529,6 +524,7 @@ def test_royal_flush_sad_path():
         Card(8, Suite.HEART),
         Card(9, Suite.DIAMOND),
     ]
-    expected = []
+    expected = [
+    ]
     result = GameEvaluator.get_royal_flush_cards(hand_cards)
     assert expected == result

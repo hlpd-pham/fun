@@ -1,4 +1,3 @@
-import functools
 import logging
 from collections import defaultdict
 from typing import List
@@ -11,7 +10,6 @@ class GameEvaluator:
     """This class always assume player cards have 7 cards to make it simple"""
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_pair_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
@@ -26,7 +24,6 @@ class GameEvaluator:
         return []
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_two_pair_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         hand_cards = sorted(all_player_cards.copy())
@@ -45,7 +42,6 @@ class GameEvaluator:
         return two_pairs
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_three_of_a_kind_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
@@ -62,7 +58,6 @@ class GameEvaluator:
         return []
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_straight_cards(
         cls, all_player_cards: List[Card], get_all_cards=False
     ) -> List[Card]:
@@ -109,6 +104,7 @@ class GameEvaluator:
                 logging.info(f"found_straight: {to_string(straight_result)}")
                 break
 
+        
         # check broadway
         potential_broadway_values = [sorted_cards[0].value] + [
             card.value for card in sorted_cards[-4:]
@@ -125,7 +121,6 @@ class GameEvaluator:
         return []
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_flush_cards(
         cls, all_player_cards: List[Card], get_all_cards=False
     ) -> List[Card]:
@@ -157,7 +152,6 @@ class GameEvaluator:
         return []
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_full_house_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         hand_cards = all_player_cards.copy()
@@ -189,7 +183,6 @@ class GameEvaluator:
         return result
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_four_of_a_kind_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
@@ -206,7 +199,6 @@ class GameEvaluator:
         return []
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_straight_flush_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         straight_cards = GameEvaluator.get_straight_cards(
@@ -223,20 +215,16 @@ class GameEvaluator:
             logging.info("no flush cards for straight flush hand")
             return []
         # check royal and smallest straight
-        if straight_flush_cards[-1].value == 1 and straight_flush_cards[-2].value in (
-            13,
-            5,
-        ):
+        if straight_flush_cards[-1].value == 1 and straight_flush_cards[-2].value in (13,5):
             straight_flush_cards = straight_flush_cards[-5:]
         else:
-            start_index = max(0, len(straight_flush_cards) - 1 - 5)
+            start_index = max(0, len(straight_flush_cards)-1- 5)
             # Slice the array from start_index to target_index
             straight_flush_cards = straight_flush_cards[start_index:-1]
         logging.info(f"straight flush cards result: {to_string(straight_flush_cards)}")
         return straight_flush_cards
 
     @classmethod
-    @functools.lru_cache(maxsize=None)
     def get_royal_flush_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         straight_flush_cards = GameEvaluator.get_straight_flush_cards(all_player_cards)
