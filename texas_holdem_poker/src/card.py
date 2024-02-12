@@ -41,6 +41,10 @@ class Card:
     def get_high_card_value(self):
         return 14 if self.value == 1 else self.value
 
+    def __hash__(self):
+        # Hash combination of name and age
+        return hash((self.value, self.suite))
+
     def __eq__(self, other):
         if not isinstance(other, Card):
             # Don't attempt to compare against unrelated types
