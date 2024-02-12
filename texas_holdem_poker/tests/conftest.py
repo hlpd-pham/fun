@@ -4,10 +4,10 @@ import logging
 def pytest_configure(config):
     # Configure logging
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         filename="app.log",
         filemode="w",
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        format="%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s",
     )
 
 

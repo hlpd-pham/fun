@@ -1,7 +1,6 @@
 import functools
 import logging
 import random
-from collections import defaultdict
 from enum import Enum
 from typing import List
 
@@ -41,27 +40,41 @@ class Game:
         return deck, deck_hash
 
     @functools.lru_cache(maxsize=None)
-    def _evaluate_hand(self, all_player_cards: List[Card]) -> tuple[HandResult, List[Card]]:
+    def _evaluate_hand(
+        self, all_player_cards: List[Card]
+    ) -> tuple[HandResult, List[Card]]:
         if GameEvaluator.get_royal_flush_cards(all_player_cards):
-            return HandResult.ROYAL_FLUSH, GameEvaluator.get_royal_flush_cards(all_player_cards)
+            return HandResult.ROYAL_FLUSH, GameEvaluator.get_royal_flush_cards(
+                all_player_cards
+            )
 
         elif GameEvaluator.get_four_of_a_kind_cards(all_player_cards):
-            return HandResult.FOUR_OF_A_KIND, GameEvaluator.get_four_of_a_kind_cards(all_player_cards)
+            return HandResult.FOUR_OF_A_KIND, GameEvaluator.get_four_of_a_kind_cards(
+                all_player_cards
+            )
 
         elif GameEvaluator.get_full_house_cards(all_player_cards):
-            return HandResult.FULL_HOUSE, GameEvaluator.get_full_house_cards(all_player_cards)
+            return HandResult.FULL_HOUSE, GameEvaluator.get_full_house_cards(
+                all_player_cards
+            )
 
         elif GameEvaluator.get_flush_cards(all_player_cards):
             return HandResult.FLUSH, GameEvaluator.get_flush_cards(all_player_cards)
 
         elif GameEvaluator.get_straight_cards(all_player_cards):
-            return HandResult.STRAIGHT, GameEvaluator.get_straight_cards(all_player_cards)
+            return HandResult.STRAIGHT, GameEvaluator.get_straight_cards(
+                all_player_cards
+            )
 
         elif GameEvaluator.get_three_of_a_kind_cards(all_player_cards):
-            return HandResult.THREE_OF_A_KIND, GameEvaluator.get_three_of_a_kind_cards(all_player_cards)
+            return HandResult.THREE_OF_A_KIND, GameEvaluator.get_three_of_a_kind_cards(
+                all_player_cards
+            )
 
         elif GameEvaluator.get_two_pair_cards(all_player_cards):
-            return HandResult.TWO_PAIRS, GameEvaluator.get_two_pair_cards(all_player_cards)
+            return HandResult.TWO_PAIRS, GameEvaluator.get_two_pair_cards(
+                all_player_cards
+            )
 
         elif GameEvaluator.get_pair_cards(all_player_cards):
             return HandResult.PAIR, GameEvaluator.get_pair_cards(all_player_cards)

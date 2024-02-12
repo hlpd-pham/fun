@@ -1,14 +1,16 @@
+import logging
 from collections import defaultdict
 from typing import List
 
 from card import Card
 
-
 class GameEvaluator:
+    '''This class always assume player cards have 7 cards to make it simple'''
 
     @classmethod
     def get_pair_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         value_cards_map = defaultdict(list)
+        logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         for c in all_player_cards:
             value_cards_map[c.value].append(c)
             if len(value_cards_map[c.value]) == 2:
@@ -17,7 +19,7 @@ class GameEvaluator:
 
     @classmethod
     def get_two_pair_cards(cls, all_player_cards: List[Card]) -> List[Card]:
-        hand_cards = sorted(all_player_cards.copy(), key=lambda card: card.value)
+        hand_cards = sorted(all_player_cards.copy())
         first_pair_cards = GameEvaluator.get_pair_cards(hand_cards)
         if len(first_pair_cards) == 0:
             return []
@@ -41,28 +43,25 @@ class GameEvaluator:
     def get_straight_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         """
         only return the highest straight cards
-
-        2 4 5 6 7 8 10
         """
-        hand_cards = sorted(all_player_cards, key=lambda card: card.value)
-        longest_start, longest_end = 0, 1
-        left = 0
-        for right in range(1, len(hand_cards)):
-            if hand_cards[right - 1].value < hand_cards[right].value - 1:
-                if right - left >= longest_end - longest_start:
-                    longest_start, longest_end = left, right
+        hand_cards = all_player_cards.copy()
+        unique_cards = {}
+        for card in hand_cards:
+            unique_cards[card.value] = card
+        sorted_cards = sorted(unique_cards.values())
+        for straight_end_idx in range(len(sorted_cards)-1, len(sorted_cards)-4, -1):
+            straight_start_idx = straight_end_idx - 4
+            found_straight = True
+            for i in range(straight_start_idx, straight_end_idx):
+                if not(sorted_cards[i].value + 1 == sorted_cards[i+1].value):
+                    found_straight = False
+                    break
+            if found_straight:
+                return sorted_cards[straight_start_idx:straight_end_idx+1]
 
-        # broadway
-        if (
-            longest_end - longest_start + 1 == 4
-            and hand_cards[-1].value == 13
-            and hand_cards[0].value == 1
-        ):
-            return [hand_cards[0]] + hand_cards[longest_start : longest_end + 1]
-
-        # normal straight
-        if longest_end - longest_start + 1 == 5:
-            return hand_cards[longest_start : longest_end + 1]
+        potential_broadway_values = [sorted_cards[0].value] + [card.value for card in sorted_cards[-4:]]
+        if potential_broadway_values == [1,10,11,12,13]:
+            return [sorted_cards[0]] + sorted_cards[-4:]
 
         return []
 
@@ -71,7 +70,7 @@ class GameEvaluator:
         """
         only return the highest flush cards
         """
-        hand_cards = sorted(all_player_cards, key=lambda card: card.value)
+        hand_cards = sorted(all_player_cards)
         suite_cards_map = defaultdict(list)
         flush_suite = None
         for card in hand_cards:
