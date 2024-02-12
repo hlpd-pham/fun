@@ -1,4 +1,3 @@
-import functools
 import logging
 import random
 from enum import Enum
@@ -39,8 +38,7 @@ class Game:
         deck_hash = {card.get_card_value_suite(): True for card in deck}
         return deck, deck_hash
 
-    @functools.lru_cache(maxsize=None)
-    def _evaluate_hand(
+    def evaluate_hand(
         self, all_player_cards: List[Card]
     ) -> tuple[HandResult, List[Card]]:
         if GameEvaluator.get_royal_flush_cards(all_player_cards):
