@@ -110,7 +110,7 @@ class Game:
             logging.info([str(c) for c in cards_dealt])
         for card in cards_dealt:
             if card.get_card_value_suite() not in self.deck_hash:
-                raise ValueError(f"card {card} is not in deck")
+                raise ValueError(f"card is not in deck: {card} ")
             del self.deck_hash[card.get_card_value_suite()]
         self.deck = list(self.deck_hash.keys())
         return cards_dealt

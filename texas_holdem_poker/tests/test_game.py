@@ -74,6 +74,14 @@ class TestGame:
         with pytest.raises(ValueError, match="Invalid number of players: "):
             self.game_instance: Game = Game(num_players=-1)
 
+    def test_game_deal_card_not_in_deck(self):
+        with pytest.raises(ValueError, match="card is not in deck"):
+            self.game_instance = Game()
+            dealt_cards = self.game_instance.players[0]
+            with patch("random.sample") as mock:
+                mock.return_value = dealt_cards
+                self.game_instance._deal_card("deal to players", CardDealAmount.PLAYER)
+
     def test_dealing_to_board_flop(self):
         with patch("random.sample", side_effect=self.make_mock_cards()):
             """expects 3 cards on board after flop"""
@@ -132,6 +140,19 @@ class TestGame:
             ValueError, match="there must be 7 cards in hand for evaluation"
         ):
             self.game_instance.evaluate_hand(hand_cards)
+
+    def test_evaluating_hand_high_card(self):
+        hand_cards = [
+            Card(4, Suite.DIAMOND),
+            Card(13, Suite.SPADE),
+            Card(7, Suite.HEART),
+            Card(9, Suite.CLUB),
+            Card(10, Suite.SPADE),
+            Card(11, Suite.SPADE),
+            Card(1, Suite.CLUB),
+        ]
+        hand_result, _ = self.game_instance.evaluate_hand(hand_cards)
+        assert hand_result == HandResult.HIGH_CARD
 
     def test_evaluating_hand_1_pair(self):
         hand_cards = [
