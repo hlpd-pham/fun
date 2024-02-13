@@ -22,7 +22,7 @@ class GameEvaluator:
     """This class always assume player cards have 7 cards to make it simple"""
 
     
-    def get_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
+    def _get_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
         for c in all_player_cards:
@@ -36,16 +36,16 @@ class GameEvaluator:
         return []
 
     
-    def get_two_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
+    def _get_two_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         hand_cards = sorted(all_player_cards.copy())
-        first_pair_cards = self.get_pair_cards(hand_cards)
+        first_pair_cards = self._get_pair_cards(hand_cards)
         if len(first_pair_cards) == 0:
             logging.info("no first pair found: returning")
             return []
         for card in first_pair_cards:
             hand_cards.remove(card)
-        second_pair_cards = self.get_pair_cards(hand_cards)
+        second_pair_cards = self._get_pair_cards(hand_cards)
         if len(second_pair_cards) == 0:
             logging.info("no second pair found: returning")
             return []
@@ -54,7 +54,7 @@ class GameEvaluator:
         return two_pairs
 
     
-    def get_three_of_a_kind_cards(self, all_player_cards: List[Card]) -> List[Card]:
+    def _get_three_of_a_kind_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
         for c in all_player_cards:
@@ -70,7 +70,7 @@ class GameEvaluator:
         return []
 
     
-    def get_straight_cards(
+    def _get_straight_cards(
         self, all_player_cards: List[Card], get_all_cards=False
     ) -> List[Card]:
         """
@@ -138,7 +138,7 @@ class GameEvaluator:
         return []
 
     
-    def get_flush_cards(
+    def _get_flush_cards(
         self, all_player_cards: List[Card], get_all_cards=False
     ) -> List[Card]:
         """
@@ -169,10 +169,10 @@ class GameEvaluator:
         return []
 
     
-    def get_full_house_cards(self, all_player_cards: List[Card]) -> List[Card]:
+    def _get_full_house_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         hand_cards = all_player_cards.copy()
-        three_of_a_kind_cards = self.get_three_of_a_kind_cards(hand_cards)
+        three_of_a_kind_cards = self._get_three_of_a_kind_cards(hand_cards)
         if len(three_of_a_kind_cards) == 0:
             logging.info(f"no three of a kind in full house hand")
             return []
@@ -181,14 +181,14 @@ class GameEvaluator:
         )
         for c in three_of_a_kind_cards:
             hand_cards.remove(c)
-        first_pair = self.get_pair_cards(hand_cards)
+        first_pair = self._get_pair_cards(hand_cards)
         if len(first_pair) == 0:
             logging.info(f"no pair in full house hand")
             return []
         logging.info(f"first pair found in full house hand: {to_string(first_pair)}")
         for c in first_pair:
             hand_cards.remove(c)
-        second_pair = self.get_pair_cards(hand_cards)
+        second_pair = self._get_pair_cards(hand_cards)
         logging.info(f"second pair found in full house hand: {to_string(second_pair)}")
 
         result = []
@@ -200,7 +200,7 @@ class GameEvaluator:
         return result
 
     
-    def get_four_of_a_kind_cards(self, all_player_cards: List[Card]) -> List[Card]:
+    def _get_four_of_a_kind_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
         for c in all_player_cards:
@@ -216,17 +216,17 @@ class GameEvaluator:
         return []
 
     
-    def get_straight_flush_cards(self, all_player_cards: List[Card]) -> List[Card]:
+    def _get_straight_flush_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
 
-        flush_cards = self.get_flush_cards(
+        flush_cards = self._get_flush_cards(
             all_player_cards, get_all_cards=True
         )
         if not flush_cards:
             logging.info("no flush cards for straight flush hand")
             return []
 
-        straight_cards = self.get_straight_cards(
+        straight_cards = self._get_straight_cards(
             flush_cards, get_all_cards=True
         )
         if not straight_cards:
@@ -248,9 +248,9 @@ class GameEvaluator:
         return straight_flush_cards
 
     
-    def get_royal_flush_cards(self, all_player_cards: List[Card]) -> List[Card]:
+    def _get_royal_flush_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
-        straight_flush_cards = self.get_straight_flush_cards(all_player_cards)
+        straight_flush_cards = self._get_straight_flush_cards(all_player_cards)
         straight_flush_card_values = set([c.value for c in straight_flush_cards])
 
         ROYAL_FLUSH_VALUES = set([10, 11, 12, 13, 1])
@@ -266,15 +266,15 @@ class GameEvaluator:
             logging.error(err_message)
             raise ValueError(err_message)
         hand_result, result_cards = HandResult.HIGH_CARD, []
-        pair_cards = self.get_pair_cards(all_player_cards)
+        pair_cards = self._get_pair_cards(all_player_cards)
         if pair_cards:
             hand_result, result_cards = HandResult.PAIR, pair_cards
 
-        two_pair_cards = self.get_two_pair_cards(all_player_cards)
+        two_pair_cards = self._get_two_pair_cards(all_player_cards)
         if two_pair_cards:
             hand_result, result_cards = (HandResult.TWO_PAIRS, two_pair_cards)
 
-        three_of_a_kind_cards = self.get_three_of_a_kind_cards(
+        three_of_a_kind_cards = self._get_three_of_a_kind_cards(
             all_player_cards
         )
         if three_of_a_kind_cards:
@@ -283,33 +283,33 @@ class GameEvaluator:
                 three_of_a_kind_cards,
             )
 
-        straight_cards = self.get_straight_cards(all_player_cards)
+        straight_cards = self._get_straight_cards(all_player_cards)
         if straight_cards:
             hand_result, result_cards = (HandResult.STRAIGHT, straight_cards)
 
-        flush_cards = self.get_flush_cards(all_player_cards)
+        flush_cards = self._get_flush_cards(all_player_cards)
         if flush_cards:
             hand_result, result_cards = HandResult.FLUSH, flush_cards
 
-        full_house_cards = self.get_full_house_cards(all_player_cards)
+        full_house_cards = self._get_full_house_cards(all_player_cards)
         if full_house_cards:
             hand_result, result_cards = (HandResult.FULL_HOUSE, full_house_cards)
 
-        four_of_a_kind_cards = self.get_four_of_a_kind_cards(all_player_cards)
+        four_of_a_kind_cards = self._get_four_of_a_kind_cards(all_player_cards)
         if four_of_a_kind_cards:
             hand_result, result_cards = (
                 HandResult.FOUR_OF_A_KIND,
                 four_of_a_kind_cards,
             )
 
-        straight_flush_cards = self.get_straight_flush_cards(all_player_cards)
+        straight_flush_cards = self._get_straight_flush_cards(all_player_cards)
         if straight_flush_cards:
             hand_result, result_cards = (
                 HandResult.STRAIGHT_FLUSH,
                 straight_flush_cards,
             )
 
-        royal_flush_cards = self.get_royal_flush_cards(all_player_cards)
+        royal_flush_cards = self._get_royal_flush_cards(all_player_cards)
         if royal_flush_cards:
             hand_result, result_cards = (HandResult.ROYAL_FLUSH, royal_flush_cards)
 
