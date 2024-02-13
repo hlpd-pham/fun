@@ -12,7 +12,7 @@ def test_get_one_pair_happy_path_return_2_cards():
         Card(5, Suite.HEART),
         Card(6, Suite.HEART),
     ]
-    result = GameEvaluator.get_pair_cards(hand_cards)
+    result = GameEvaluator().get_pair_cards(hand_cards)
     assert len(result) == 2
 
 
@@ -27,7 +27,7 @@ def test_get_one_pair_sad_path_return_0_cards():
         Card(5, Suite.HEART),
         Card(6, Suite.HEART),
     ]
-    result = GameEvaluator.get_pair_cards(hand_cards)
+    result = GameEvaluator().get_pair_cards(hand_cards)
     assert len(result) == 0
 
 
@@ -41,7 +41,7 @@ def test_two_pairs_happy_path_return_4_cards():
         Card(5, Suite.HEART),
         Card(6, Suite.HEART),
     ]
-    result = GameEvaluator.get_two_pair_cards(hand_cards)
+    result = GameEvaluator().get_two_pair_cards(hand_cards)
     assert len(result) == 4
 
 
@@ -56,7 +56,7 @@ def test_two_pairs_happy_path_return_0_cards():
         Card(5, Suite.HEART),
         Card(6, Suite.HEART),
     ]
-    result = GameEvaluator.get_two_pair_cards(hand_cards)
+    result = GameEvaluator().get_two_pair_cards(hand_cards)
     assert len(result) == 0
 
 
@@ -71,7 +71,7 @@ def test_two_pairs_happy_path_return_0_cards_3_of_a_kind():
         Card(5, Suite.HEART),
         Card(6, Suite.HEART),
     ]
-    result = GameEvaluator.get_two_pair_cards(hand_cards)
+    result = GameEvaluator().get_two_pair_cards(hand_cards)
     assert len(result) == 0
 
 
@@ -85,7 +85,7 @@ def test_two_pairs_sad_path_0_pair():
         Card(5, Suite.HEART),
         Card(6, Suite.HEART),
     ]
-    result = GameEvaluator.get_two_pair_cards(hand_cards)
+    result = GameEvaluator().get_two_pair_cards(hand_cards)
     assert len(result) == 0
 
 
@@ -100,7 +100,7 @@ def test_three_of_a_kind_happy_path():
         Card(5, Suite.HEART),
         Card(6, Suite.HEART),
     ]
-    result = GameEvaluator.get_three_of_a_kind_cards(hand_cards)
+    result = GameEvaluator().get_three_of_a_kind_cards(hand_cards)
     assert len(result) == 3
 
 
@@ -114,7 +114,7 @@ def test_three_of_a_kind_sad_path():
         Card(5, Suite.HEART),
         Card(6, Suite.HEART),
     ]
-    result = GameEvaluator.get_three_of_a_kind_cards(hand_cards)
+    result = GameEvaluator().get_three_of_a_kind_cards(hand_cards)
     assert len(result) == 0
 
 
@@ -135,7 +135,7 @@ def test_straight_happy_path_normal():
         Card(6, Suite.CLUB),
         Card(7, Suite.HEART),
     ]
-    result = GameEvaluator.get_straight_cards(hand_cards)
+    result = GameEvaluator().get_straight_cards(hand_cards)
     assert expected == result
 
 
@@ -156,7 +156,7 @@ def test_straight_happy_path_higher_straight():
         Card(7, Suite.HEART),
         Card(8, Suite.HEART),
     ]
-    result = GameEvaluator.get_straight_cards(hand_cards)
+    result = GameEvaluator().get_straight_cards(hand_cards)
     assert expected == result
 
 
@@ -177,7 +177,7 @@ def test_straight_happy_path_broadway():
         Card(12, Suite.HEART),
         Card(13, Suite.HEART),
     ]
-    result = GameEvaluator.get_straight_cards(hand_cards)
+    result = GameEvaluator().get_straight_cards(hand_cards)
     assert expected == result
 
 
@@ -198,7 +198,7 @@ def test_straight_happy_path_broadway_7_cards():
         Card(12, Suite.HEART),
         Card(13, Suite.HEART),
     ]
-    result = GameEvaluator.get_straight_cards(hand_cards)
+    result = GameEvaluator().get_straight_cards(hand_cards)
     assert expected == result
 
 
@@ -219,7 +219,7 @@ def test_straight_happy_path_smallest_straight():
         Card(4, Suite.CLUB),
         Card(5, Suite.HEART),
     ]
-    result = GameEvaluator.get_straight_cards(hand_cards)
+    result = GameEvaluator().get_straight_cards(hand_cards)
     assert expected == result
 
 
@@ -234,7 +234,7 @@ def test_straight_sad_path_no_straight():
         Card(13, Suite.HEART),
     ]
     expected = []
-    result = GameEvaluator.get_straight_cards(hand_cards)
+    result = GameEvaluator().get_straight_cards(hand_cards)
     assert expected == result
 
 
@@ -255,7 +255,7 @@ def test_flush_happy_path_normal():
         Card(5, Suite.HEART),
         Card(1, Suite.HEART),
     ]
-    result = GameEvaluator.get_flush_cards(hand_cards)
+    result = GameEvaluator().get_flush_cards(hand_cards)
     assert expected == result
 
 
@@ -276,7 +276,7 @@ def test_flush_happy_path_6_cards_flush():
         Card(13, Suite.HEART),
         Card(1, Suite.HEART),
     ]
-    result = GameEvaluator.get_flush_cards(hand_cards)
+    result = GameEvaluator().get_flush_cards(hand_cards)
     assert expected == result
 
 
@@ -291,7 +291,7 @@ def test_flush_sad_path():
         Card(5, Suite.SPADE),
     ]
     expected = []
-    result = GameEvaluator.get_flush_cards(hand_cards)
+    result = GameEvaluator().get_flush_cards(hand_cards)
     assert expected == result
 
 
@@ -312,7 +312,7 @@ def test_full_house_happy_path_one_pair():
         Card(2, Suite.HEART),
         Card(2, Suite.HEART),
     ]
-    result = GameEvaluator.get_full_house_cards(hand_cards)
+    result = GameEvaluator().get_full_house_cards(hand_cards)
     assert expected == result
 
 
@@ -333,7 +333,7 @@ def test_full_house_happy_path_two_pairs():
         Card(3, Suite.SPADE),
         Card(3, Suite.CLUB),
     ]
-    result = GameEvaluator.get_full_house_cards(hand_cards)
+    result = GameEvaluator().get_full_house_cards(hand_cards)
     assert expected == result
 
 
@@ -348,7 +348,7 @@ def test_full_house_sad_path_no_trips():
         Card(5, Suite.SPADE),
     ]
     expected = []
-    result = GameEvaluator.get_full_house_cards(hand_cards)
+    result = GameEvaluator().get_full_house_cards(hand_cards)
     assert expected == result
 
 
@@ -363,7 +363,7 @@ def test_full_house_sad_path_has_trip_no_pair():
         Card(5, Suite.SPADE),
     ]
     expected = []
-    result = GameEvaluator.get_full_house_cards(hand_cards)
+    result = GameEvaluator().get_full_house_cards(hand_cards)
     assert expected == result
 
 
@@ -383,7 +383,7 @@ def test_four_of_a_kind_happy_path():
         Card(1, Suite.CLUB),
         Card(1, Suite.SPADE),
     ]
-    result = GameEvaluator.get_four_of_a_kind_cards(hand_cards)
+    result = GameEvaluator().get_four_of_a_kind_cards(hand_cards)
     assert expected == result
 
 
@@ -398,7 +398,7 @@ def test_four_of_a_kind_sad_path():
         Card(5, Suite.SPADE),
     ]
     expected = []
-    result = GameEvaluator.get_four_of_a_kind_cards(hand_cards)
+    result = GameEvaluator().get_four_of_a_kind_cards(hand_cards)
     assert expected == result
 
 
@@ -419,7 +419,7 @@ def test_straight_flush_happy_path_smallest_straight():
         Card(5, Suite.DIAMOND),
         Card(1, Suite.DIAMOND),
     ]
-    result = GameEvaluator.get_straight_flush_cards(hand_cards)
+    result = GameEvaluator().get_straight_flush_cards(hand_cards)
     assert expected == result
 
 
@@ -440,7 +440,7 @@ def test_straight_flush_happy_path():
         Card(5, Suite.HEART),
         Card(1, Suite.HEART),
     ]
-    result = GameEvaluator.get_straight_flush_cards(hand_cards)
+    result = GameEvaluator().get_straight_flush_cards(hand_cards)
     assert expected == result
 
 
@@ -461,7 +461,7 @@ def test_straight_flush_happy_path_higher_straight():
         Card(5, Suite.HEART),
         Card(6, Suite.HEART),
     ]
-    result = GameEvaluator.get_straight_flush_cards(hand_cards)
+    result = GameEvaluator().get_straight_flush_cards(hand_cards)
     assert expected == result
 
 
@@ -482,7 +482,7 @@ def test_straight_flush_happy_path_royal():
         Card(13, Suite.HEART),
         Card(1, Suite.HEART),
     ]
-    result = GameEvaluator.get_straight_flush_cards(hand_cards)
+    result = GameEvaluator().get_straight_flush_cards(hand_cards)
     assert expected == result
 
 
@@ -497,7 +497,7 @@ def test_straight_flush_sad_path_no_flush():
         Card(7, Suite.SPADE),
     ]
     expected = []
-    result = GameEvaluator.get_straight_flush_cards(hand_cards)
+    result = GameEvaluator().get_straight_flush_cards(hand_cards)
     assert expected == result
 
 
@@ -512,7 +512,7 @@ def test_straight_flush_sad_path_no_straight():
         Card(11, Suite.SPADE),
     ]
     expected = []
-    result = GameEvaluator.get_straight_flush_cards(hand_cards)
+    result = GameEvaluator().get_straight_flush_cards(hand_cards)
     assert expected == result
 
 
@@ -533,7 +533,7 @@ def test_royal_flush_happy_path():
         Card(13, Suite.HEART),
         Card(1, Suite.HEART),
     ]
-    result = GameEvaluator.get_royal_flush_cards(hand_cards)
+    result = GameEvaluator().get_royal_flush_cards(hand_cards)
     assert expected == result
 
 
@@ -548,5 +548,5 @@ def test_royal_flush_sad_path():
         Card(9, Suite.DIAMOND),
     ]
     expected = []
-    result = GameEvaluator.get_royal_flush_cards(hand_cards)
+    result = GameEvaluator().get_royal_flush_cards(hand_cards)
     assert expected == result
