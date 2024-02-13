@@ -402,6 +402,27 @@ def test_four_of_a_kind_sad_path():
     assert expected == result
 
 
+def test_straight_flush_happy_path_smallest_straight():
+    hand_cards = [
+        Card(1, Suite.DIAMOND),
+        Card(2, Suite.DIAMOND),
+        Card(3, Suite.DIAMOND),
+        Card(4, Suite.DIAMOND),
+        Card(5, Suite.DIAMOND),
+        Card(11, Suite.CLUB),
+        Card(1, Suite.CLUB),
+    ]
+    expected = [
+        Card(2, Suite.DIAMOND),
+        Card(3, Suite.DIAMOND),
+        Card(4, Suite.DIAMOND),
+        Card(5, Suite.DIAMOND),
+        Card(1, Suite.DIAMOND),
+    ]
+    result = GameEvaluator.get_straight_flush_cards(hand_cards)
+    assert expected == result
+
+
 def test_straight_flush_happy_path():
     hand_cards = [
         Card(1, Suite.HEART),

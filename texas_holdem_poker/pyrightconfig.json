@@ -4,5 +4,6 @@
   },
   "reportArgumentType": "none",
   "reportGeneralTypeIssues": "none",
+  "reportUnusedVariable": "none",
   "typeCheckingMode": "basic"
 }

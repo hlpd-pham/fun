@@ -80,13 +80,19 @@ class GameEvaluator:
             for right in range(1, len(sorted_cards)):
                 if not sorted_cards[right - 1].value + 1 == sorted_cards[right].value:
                     left = right
+
+            # check broadway
+            if right - left + 1 == 4 and sorted_cards[0].value == 1:
+                result = [sorted_cards[0]] + sorted_cards[-4:]
+                logging.info(f"found broadway cards: {to_string(result)}")
+                return result
+
+            # no straight found
             if right - left + 1 < 5:
                 logging.info("no straight cards found")
                 return []
+
             result = sorted_cards[left : right + 1]
-            # check broadway
-            if sorted_cards[-1].value == 13 and sorted_cards[0].value == 1:
-                result.append(sorted_cards[0])
             logging.info(f"all straight cards found: {to_string(result)}")
             return result
 
@@ -200,19 +206,22 @@ class GameEvaluator:
     @classmethod
     def get_straight_flush_cards(cls, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
-        straight_cards = GameEvaluator.get_straight_cards(
+
+        flush_cards = GameEvaluator.get_flush_cards(
             all_player_cards, get_all_cards=True
+        )
+        if not flush_cards:
+            logging.info("no flush cards for straight flush hand")
+            return []
+
+        straight_cards = GameEvaluator.get_straight_cards(
+            flush_cards, get_all_cards=True
         )
         if not straight_cards:
             logging.info("no straight cards for straight flush hand")
             return []
-        straight_flush_cards = GameEvaluator.get_flush_cards(
-            straight_cards, get_all_cards=True
-        )
 
-        if not straight_flush_cards:
-            logging.info("no flush cards for straight flush hand")
-            return []
+        straight_flush_cards = flush_cards
         # check royal and smallest straight
         if straight_flush_cards[-1].value == 1 and straight_flush_cards[-2].value in (
             13,

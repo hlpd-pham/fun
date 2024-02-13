@@ -3,8 +3,8 @@ from unittest.mock import patch
 
 import pytest
 
-from card import CardDealAmount
-from game import Game
+from card import Card, CardDealAmount, Suite
+from game import Game, HandResult
 
 from .fixtures.game_mock_data import mock_card_options
 
@@ -111,3 +111,141 @@ class TestGame:
                 + mock_card_options[7:8]
                 + mock_card_options[9:10]
             )
+
+    def test_evaluating_hand_bad_input(self):
+        with pytest.raises(
+            ValueError, match="there must be 7 cards in hand for evaluation"
+        ):
+            self.game_instance.evaluate_hand([])
+
+    def test_evaluating_hand_bad_input_duplicate_cards(self):
+        hand_cards = [
+            Card(4, Suite.DIAMOND),
+            Card(4, Suite.SPADE),
+            Card(4, Suite.SPADE),
+            Card(7, Suite.CLUB),
+            Card(10, Suite.SPADE),
+            Card(11, Suite.SPADE),
+            Card(1, Suite.CLUB),
+        ]
+        with pytest.raises(
+            ValueError, match="there must be 7 cards in hand for evaluation"
+        ):
+            self.game_instance.evaluate_hand(hand_cards)
+
+    def test_evaluating_hand_1_pair(self):
+        hand_cards = [
+            Card(4, Suite.DIAMOND),
+            Card(4, Suite.SPADE),
+            Card(7, Suite.HEART),
+            Card(9, Suite.CLUB),
+            Card(10, Suite.SPADE),
+            Card(11, Suite.SPADE),
+            Card(1, Suite.CLUB),
+        ]
+        hand_result, _ = self.game_instance.evaluate_hand(hand_cards)
+        assert hand_result == HandResult.PAIR
+
+    def test_evaluating_hand_2_pairs(self):
+        hand_cards = [
+            Card(4, Suite.DIAMOND),
+            Card(4, Suite.SPADE),
+            Card(7, Suite.HEART),
+            Card(7, Suite.CLUB),
+            Card(10, Suite.SPADE),
+            Card(11, Suite.SPADE),
+            Card(1, Suite.CLUB),
+        ]
+        hand_result, _ = self.game_instance.evaluate_hand(hand_cards)
+        assert hand_result == HandResult.TWO_PAIRS
+
+    def test_evaluating_hand_trips(self):
+        hand_cards = [
+            Card(4, Suite.DIAMOND),
+            Card(4, Suite.SPADE),
+            Card(4, Suite.CLUB),
+            Card(7, Suite.CLUB),
+            Card(10, Suite.SPADE),
+            Card(11, Suite.SPADE),
+            Card(1, Suite.CLUB),
+        ]
+        hand_result, _ = self.game_instance.evaluate_hand(hand_cards)
+        assert hand_result == HandResult.THREE_OF_A_KIND
+
+    def test_evaluating_hand_straight(self):
+        hand_cards = [
+            Card(1, Suite.DIAMOND),
+            Card(2, Suite.SPADE),
+            Card(3, Suite.CLUB),
+            Card(4, Suite.CLUB),
+            Card(5, Suite.SPADE),
+            Card(11, Suite.SPADE),
+            Card(1, Suite.CLUB),
+        ]
+        hand_result, _ = self.game_instance.evaluate_hand(hand_cards)
+        assert hand_result == HandResult.STRAIGHT
+
+    def test_evaluating_hand_flush(self):
+        hand_cards = [
+            Card(1, Suite.DIAMOND),
+            Card(2, Suite.SPADE),
+            Card(3, Suite.CLUB),
+            Card(4, Suite.CLUB),
+            Card(5, Suite.CLUB),
+            Card(11, Suite.CLUB),
+            Card(1, Suite.CLUB),
+        ]
+        hand_result, _ = self.game_instance.evaluate_hand(hand_cards)
+        assert hand_result == HandResult.FLUSH
+
+    def test_evaluating_hand_full_house(self):
+        hand_cards = [
+            Card(1, Suite.DIAMOND),
+            Card(3, Suite.SPADE),
+            Card(3, Suite.CLUB),
+            Card(3, Suite.DIAMOND),
+            Card(5, Suite.CLUB),
+            Card(11, Suite.CLUB),
+            Card(1, Suite.CLUB),
+        ]
+        hand_result, _ = self.game_instance.evaluate_hand(hand_cards)
+        assert hand_result == HandResult.FULL_HOUSE
+
+    def test_evaluating_hand_four_of_a_kind(self):
+        hand_cards = [
+            Card(1, Suite.DIAMOND),
+            Card(1, Suite.SPADE),
+            Card(1, Suite.CLUB),
+            Card(3, Suite.DIAMOND),
+            Card(5, Suite.CLUB),
+            Card(11, Suite.CLUB),
+            Card(1, Suite.HEART),
+        ]
+        hand_result, _ = self.game_instance.evaluate_hand(hand_cards)
+        assert hand_result == HandResult.FOUR_OF_A_KIND
+
+    def test_evaluating_hand_straight_flush(self):
+        hand_cards = [
+            Card(1, Suite.DIAMOND),
+            Card(2, Suite.DIAMOND),
+            Card(3, Suite.DIAMOND),
+            Card(4, Suite.DIAMOND),
+            Card(5, Suite.DIAMOND),
+            Card(11, Suite.CLUB),
+            Card(1, Suite.CLUB),
+        ]
+        hand_result, _ = self.game_instance.evaluate_hand(hand_cards)
+        assert hand_result == HandResult.STRAIGHT_FLUSH
+
+    def test_evaluating_hand_royal(self):
+        hand_cards = [
+            Card(1, Suite.DIAMOND),
+            Card(10, Suite.DIAMOND),
+            Card(11, Suite.DIAMOND),
+            Card(12, Suite.DIAMOND),
+            Card(13, Suite.DIAMOND),
+            Card(11, Suite.CLUB),
+            Card(1, Suite.CLUB),
+        ]
+        hand_result, _ = self.game_instance.evaluate_hand(hand_cards)
+        assert hand_result == HandResult.ROYAL_FLUSH
