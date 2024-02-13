@@ -8,7 +8,7 @@ logging.basicConfig(
     level=logging.INFO,
     filename="app.log",
     filemode="w",
-    format="%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s",
+    format="%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(funcName)s - %(message)s",
 )
 
 
@@ -21,11 +21,9 @@ def run():
 
     print(to_string(game.get_board()))
 
-    print(f"evaluating hands")
-    for idx, p in enumerate(game.players):
-        print(
-            f"player {idx}: {to_string(p)} - {to_string(game.evaluate_hand(p + game.get_board()))}"
-        )
+    game.evaluating_players()
+    for player in game.players.values():
+        print(player)
 
 
 run()
