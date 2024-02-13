@@ -5,7 +5,7 @@ def pytest_configure(config):
     # Configure logging
     logging.basicConfig(
         level=logging.INFO,
-        filename="app.log",
+        filename="test.log",
         filemode="w",
         format="%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s",
     )

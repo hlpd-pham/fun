@@ -36,7 +36,7 @@ class Game:
     def _get_deck(self):
         deck = ALL_CARDS.copy()
         random.shuffle(deck)
-        deck_hash = {card.get_card_value_suite(): True for card in deck}
+        deck_hash = {card.get_card_value_suite(): card for card in deck}
         return deck, deck_hash
 
     def evaluate_hand(
@@ -112,7 +112,8 @@ class Game:
             if card.get_card_value_suite() not in self.deck_hash:
                 raise ValueError(f"card is not in deck: {card} ")
             del self.deck_hash[card.get_card_value_suite()]
-        self.deck = list(self.deck_hash.keys())
+        self.deck = list(self.deck_hash.values())
+        logging.info(f"cards type {type(self.deck[0])}")
         return cards_dealt
 
     def _dealing_to_players(self, num_players):
