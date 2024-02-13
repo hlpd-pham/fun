@@ -70,6 +70,3 @@ class Game:
         # scores_players_map = {}
         # for idx, player_hand in enumerate(players):
         #     score, hand
-            
-
-

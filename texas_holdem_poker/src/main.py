@@ -1,4 +1,5 @@
 import logging
+
 from card import CardDealAmount
 from game import Game
 from utils.strings import to_string
@@ -9,6 +10,7 @@ logging.basicConfig(
     filemode="w",
     format="%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s",
 )
+
 
 def run():
     game = Game(num_players=3, debug=True)
@@ -21,7 +23,9 @@ def run():
 
     print(f"evaluating hands")
     for idx, p in enumerate(game.players):
-        print(f"player {idx}: {to_string(p)} - {to_string(game.evaluate_hand(p + game.get_board()))}")
+        print(
+            f"player {idx}: {to_string(p)} - {to_string(game.evaluate_hand(p + game.get_board()))}"
+        )
 
 
 run()

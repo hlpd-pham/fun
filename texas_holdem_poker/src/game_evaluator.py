@@ -6,6 +6,7 @@ from typing import List
 from card import Card
 from utils.strings import to_string
 
+
 class HandResult(Enum):
     ROYAL_FLUSH = 10
     STRAIGHT_FLUSH = 9
@@ -18,10 +19,10 @@ class HandResult(Enum):
     PAIR = 2
     HIGH_CARD = 1
 
+
 class GameEvaluator:
     """This class always assume player cards have 7 cards to make it simple"""
 
-    
     def _get_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
@@ -35,7 +36,6 @@ class GameEvaluator:
         )
         return []
 
-    
     def _get_two_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         hand_cards = sorted(all_player_cards.copy())
@@ -53,7 +53,6 @@ class GameEvaluator:
         logging.info(f"two pairs found {to_string(two_pairs)}")
         return two_pairs
 
-    
     def _get_three_of_a_kind_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
@@ -69,7 +68,6 @@ class GameEvaluator:
         )
         return []
 
-    
     def _get_straight_cards(
         self, all_player_cards: List[Card], get_all_cards=False
     ) -> List[Card]:
@@ -137,7 +135,6 @@ class GameEvaluator:
         logging.info(f"no straight found, returning")
         return []
 
-    
     def _get_flush_cards(
         self, all_player_cards: List[Card], get_all_cards=False
     ) -> List[Card]:
@@ -168,7 +165,6 @@ class GameEvaluator:
         logging.info(f"no flush cards found")
         return []
 
-    
     def _get_full_house_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         hand_cards = all_player_cards.copy()
@@ -199,7 +195,6 @@ class GameEvaluator:
         logging.info(f"full house hand found: {to_string(result)}")
         return result
 
-    
     def _get_four_of_a_kind_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         value_cards_map = defaultdict(list)
@@ -215,20 +210,15 @@ class GameEvaluator:
         )
         return []
 
-    
     def _get_straight_flush_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
 
-        flush_cards = self._get_flush_cards(
-            all_player_cards, get_all_cards=True
-        )
+        flush_cards = self._get_flush_cards(all_player_cards, get_all_cards=True)
         if not flush_cards:
             logging.info("no flush cards for straight flush hand")
             return []
 
-        straight_cards = self._get_straight_cards(
-            flush_cards, get_all_cards=True
-        )
+        straight_cards = self._get_straight_cards(flush_cards, get_all_cards=True)
         if not straight_cards:
             logging.info("no straight cards for straight flush hand")
             return []
@@ -247,7 +237,6 @@ class GameEvaluator:
         logging.info(f"straight flush cards result: {to_string(straight_flush_cards)}")
         return straight_flush_cards
 
-    
     def _get_royal_flush_cards(self, all_player_cards: List[Card]) -> List[Card]:
         logging.info(f"player cards: {[str(card) for card in all_player_cards]}")
         straight_flush_cards = self._get_straight_flush_cards(all_player_cards)
@@ -274,9 +263,7 @@ class GameEvaluator:
         if two_pair_cards:
             hand_result, result_cards = (HandResult.TWO_PAIRS, two_pair_cards)
 
-        three_of_a_kind_cards = self._get_three_of_a_kind_cards(
-            all_player_cards
-        )
+        three_of_a_kind_cards = self._get_three_of_a_kind_cards(all_player_cards)
         if three_of_a_kind_cards:
             hand_result, result_cards = (
                 HandResult.THREE_OF_A_KIND,
@@ -316,5 +303,7 @@ class GameEvaluator:
         if hand_result != HandResult.HIGH_CARD:
             return hand_result, result_cards
 
-        sorted_cards = sorted(all_player_cards, key=lambda card: card.get_high_card_value())
+        sorted_cards = sorted(
+            all_player_cards, key=lambda card: card.get_high_card_value()
+        )
         return HandResult.HIGH_CARD, [sorted_cards[-1]]
