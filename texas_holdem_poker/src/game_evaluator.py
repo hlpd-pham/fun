@@ -1,3 +1,4 @@
+from enum import Enum
 import logging
 from collections import defaultdict
 from typing import List
@@ -5,6 +6,17 @@ from typing import List
 from card import Card
 from utils.strings import to_string
 
+class HandResult(Enum):
+    ROYAL_FLUSH = 10
+    STRAIGHT_FLUSH = 9
+    FOUR_OF_A_KIND = 8
+    FULL_HOUSE = 7
+    FLUSH = 6
+    STRAIGHT = 5
+    THREE_OF_A_KIND = 4
+    TWO_PAIRS = 3
+    PAIR = 2
+    HIGH_CARD = 1
 
 class GameEvaluator:
     """This class always assume player cards have 7 cards to make it simple"""
@@ -245,3 +257,64 @@ class GameEvaluator:
         if ROYAL_FLUSH_VALUES <= straight_flush_card_values:
             return straight_flush_cards
         return []
+
+    def evaluate_hand(
+        self, all_player_cards: List[Card]
+    ) -> tuple[HandResult, List[Card]]:
+        if len(set(all_player_cards)) != 7:
+            err_message = f"there must be 7 cards in hand for evaluation, found: {to_string(all_player_cards)}"
+            logging.error(err_message)
+            raise ValueError(err_message)
+        hand_result, result_cards = HandResult.HIGH_CARD, []
+        pair_cards = GameEvaluator.get_pair_cards(all_player_cards)
+        if pair_cards:
+            hand_result, result_cards = HandResult.PAIR, pair_cards
+
+        two_pair_cards = GameEvaluator.get_two_pair_cards(all_player_cards)
+        if two_pair_cards:
+            hand_result, result_cards = (HandResult.TWO_PAIRS, two_pair_cards)
+
+        three_of_a_kind_cards = GameEvaluator.get_three_of_a_kind_cards(
+            all_player_cards
+        )
+        if three_of_a_kind_cards:
+            hand_result, result_cards = (
+                HandResult.THREE_OF_A_KIND,
+                three_of_a_kind_cards,
+            )
+
+        straight_cards = GameEvaluator.get_straight_cards(all_player_cards)
+        if straight_cards:
+            hand_result, result_cards = (HandResult.STRAIGHT, straight_cards)
+
+        flush_cards = GameEvaluator.get_flush_cards(all_player_cards)
+        if flush_cards:
+            hand_result, result_cards = HandResult.FLUSH, flush_cards
+
+        full_house_cards = GameEvaluator.get_full_house_cards(all_player_cards)
+        if full_house_cards:
+            hand_result, result_cards = (HandResult.FULL_HOUSE, full_house_cards)
+
+        four_of_a_kind_cards = GameEvaluator.get_four_of_a_kind_cards(all_player_cards)
+        if four_of_a_kind_cards:
+            hand_result, result_cards = (
+                HandResult.FOUR_OF_A_KIND,
+                four_of_a_kind_cards,
+            )
+
+        straight_flush_cards = GameEvaluator.get_straight_flush_cards(all_player_cards)
+        if straight_flush_cards:
+            hand_result, result_cards = (
+                HandResult.STRAIGHT_FLUSH,
+                straight_flush_cards,
+            )
+
+        royal_flush_cards = GameEvaluator.get_royal_flush_cards(all_player_cards)
+        if royal_flush_cards:
+            hand_result, result_cards = (HandResult.ROYAL_FLUSH, royal_flush_cards)
+
+        if hand_result != HandResult.HIGH_CARD:
+            return hand_result, result_cards
+
+        sorted_cards = sorted(all_player_cards, key=lambda card: card.get_high_card_value())
+        return HandResult.HIGH_CARD, [sorted_cards[-1]]

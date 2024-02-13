@@ -16,7 +16,8 @@ def run():
     for deal_type in [CardDealAmount.FLOP, CardDealAmount.TURN, CardDealAmount.RIVER]:
         print(deal_type)
         game.dealing_to_board(deal_type)
-        print(to_string(game.get_board()))
+
+    print(to_string(game.get_board()))
 
     print(f"evaluating hands")
     for idx, p in enumerate(game.players):
