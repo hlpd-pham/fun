@@ -120,4 +120,3 @@ class TestGame:
                 + mock_card_options[7:8]
                 + mock_card_options[9:10]
             )
-

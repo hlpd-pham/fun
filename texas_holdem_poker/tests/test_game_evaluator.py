@@ -1,4 +1,5 @@
 import pytest
+
 from card import Card, Suite
 from game_evaluator import GameEvaluator, HandResult
 
@@ -559,6 +560,7 @@ def test_evaluating_hand_bad_input():
     ):
         GameEvaluator().evaluate_hand([])
 
+
 def test_evaluating_hand_bad_input_duplicate_cards():
     hand_cards = [
         Card(4, Suite.DIAMOND),
@@ -574,6 +576,7 @@ def test_evaluating_hand_bad_input_duplicate_cards():
     ):
         GameEvaluator().evaluate_hand(hand_cards)
 
+
 def test_evaluating_hand_high_card():
     hand_cards = [
         Card(4, Suite.DIAMOND),
@@ -586,6 +589,7 @@ def test_evaluating_hand_high_card():
     ]
     hand_result, _ = GameEvaluator().evaluate_hand(hand_cards)
     assert hand_result == HandResult.HIGH_CARD
+
 
 def test_evaluating_hand_1_pair():
     hand_cards = [
@@ -600,6 +604,7 @@ def test_evaluating_hand_1_pair():
     hand_result, _ = GameEvaluator().evaluate_hand(hand_cards)
     assert hand_result == HandResult.PAIR
 
+
 def test_evaluating_hand_2_pairs():
     hand_cards = [
         Card(4, Suite.DIAMOND),
@@ -612,6 +617,7 @@ def test_evaluating_hand_2_pairs():
     ]
     hand_result, _ = GameEvaluator().evaluate_hand(hand_cards)
     assert hand_result == HandResult.TWO_PAIRS
+
 
 def test_evaluating_hand_trips():
     hand_cards = [
@@ -626,6 +632,7 @@ def test_evaluating_hand_trips():
     hand_result, _ = GameEvaluator().evaluate_hand(hand_cards)
     assert hand_result == HandResult.THREE_OF_A_KIND
 
+
 def test_evaluating_hand_straight():
     hand_cards = [
         Card(1, Suite.DIAMOND),
@@ -638,6 +645,7 @@ def test_evaluating_hand_straight():
     ]
     hand_result, _ = GameEvaluator().evaluate_hand(hand_cards)
     assert hand_result == HandResult.STRAIGHT
+
 
 def test_evaluating_hand_flush():
     hand_cards = [
@@ -652,6 +660,7 @@ def test_evaluating_hand_flush():
     hand_result, _ = GameEvaluator().evaluate_hand(hand_cards)
     assert hand_result == HandResult.FLUSH
 
+
 def test_evaluating_hand_full_house():
     hand_cards = [
         Card(1, Suite.DIAMOND),
@@ -664,6 +673,7 @@ def test_evaluating_hand_full_house():
     ]
     hand_result, _ = GameEvaluator().evaluate_hand(hand_cards)
     assert hand_result == HandResult.FULL_HOUSE
+
 
 def test_evaluating_hand_four_of_a_kind():
     hand_cards = [
@@ -678,6 +688,7 @@ def test_evaluating_hand_four_of_a_kind():
     hand_result, _ = GameEvaluator().evaluate_hand(hand_cards)
     assert hand_result == HandResult.FOUR_OF_A_KIND
 
+
 def test_evaluating_hand_straight_flush():
     hand_cards = [
         Card(1, Suite.DIAMOND),
@@ -690,6 +701,7 @@ def test_evaluating_hand_straight_flush():
     ]
     hand_result, _ = GameEvaluator().evaluate_hand(hand_cards)
     assert hand_result == HandResult.STRAIGHT_FLUSH
+
 
 def test_evaluating_hand_royal():
     hand_cards = [

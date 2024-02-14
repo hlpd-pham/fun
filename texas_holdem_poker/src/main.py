@@ -13,17 +13,25 @@ logging.basicConfig(
 
 
 def run():
-    game = Game(num_players=3, debug=True)
+    num_players = 2
+    print(f"start game for {num_players} players")
+    game = Game(num_players=num_players, debug=True)
 
     for deal_type in [CardDealAmount.FLOP, CardDealAmount.TURN, CardDealAmount.RIVER]:
-        print(deal_type)
         game.dealing_to_board(deal_type)
 
+    print("board")
     print(to_string(game.get_board()))
+    print()
 
-    game.evaluating_players()
+    print("hand results")
+    game._evaluating_player_hands()
     for player in game.players.values():
         print(player)
+
+    print("winners")
+    for w in game.find_winners():
+        print(to_string(w))
 
 
 run()

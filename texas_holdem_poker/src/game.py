@@ -1,10 +1,11 @@
 import logging
 import random
+from collections import defaultdict
 from typing import Dict, List
 
 from card import Card, CardDealAmount
 from constants import ALL_CARDS
-from game_evaluator import GameEvaluator
+from game_evaluator import GameEvaluator, HandResult
 from player import Player
 from utils.strings import to_string
 
@@ -42,8 +43,38 @@ class Game:
         logging.info(f"cards type {type(self.deck[0])}")
         return cards_dealt
 
+    def _get_kickers(self, player_cards, main_cards):
+        # max cards allowed for a hand
+        if len(main_cards) == 5:
+            return []
+
+        cards_used_for_kickers = 5 - len(main_cards)
+        kicker_options = set(player_cards) - set(main_cards)
+        sorted_kicker_options = sorted(
+            list(kicker_options), key=lambda card: card.get_high_card_value()
+        )
+        return sorted_kicker_options[-cards_used_for_kickers:]
+
+    def _evaluating_player_hands(self) -> dict[str, Player]:
+        logging.info("evaluating player hands")
+        logging.info(f"players: {to_string(self.players)}")
+        for player_id in self.players.keys():
+            player_cards = self.players[player_id].cards + self.get_board()
+            hand_result, main_cards = self.game_evaluator.evaluate_hand(player_cards)
+            self.players[player_id].hand_result = hand_result
+            self.players[player_id].main_cards = main_cards
+            self.players[player_id].kickers = self._get_kickers(
+                player_cards, main_cards
+            )
+
+        logging.info(
+            f"player_id: {player_id}, player_cards: {to_string(player_cards)}, hand result: {to_string(hand_result)}"
+        )
+
+        return self.players
+
     def _poplulate_players(self, num_players) -> None:
-        logging.info(f'dealing cards to {num_players} players')
+        logging.info(f"dealing cards to {num_players} players")
         for _ in range(num_players):
             new_player = Player()
             player_cards = self._deal_card(
@@ -52,29 +83,83 @@ class Game:
             new_player.cards = player_cards
             self.players[new_player.id] = new_player
 
+    def find_tie_break_kicker_winners(self, tie_players: List[Player]):
+        # no more kicker to tie break
+        if not tie_players[0].kickers:
+            return tie_players
+
+        highest_kicker_card_map: dict[int, List[Player]] = defaultdict(list)
+        highest_kicker_value = float("-inf")
+
+        for i in range(len(tie_players)):
+            player_highest_kicker_card = tie_players[i].kickers[-1]
+            highest_kicker_card_map[player_highest_kicker_card.value].append(
+                tie_players[i]
+            )
+            tie_players[i].kickers.pop()
+            highest_kicker_value = max(
+                highest_kicker_value, player_highest_kicker_card.value
+            )
+
+        # still haven't figured out winner
+        if len(highest_kicker_card_map[highest_kicker_value]) > 1:
+            return self.find_tie_break_kicker_winners(tie_players)
+
+        return tie_players
+
+    def find_tie_break_winners(self, tie_players: List[Player]) -> List[Player]:
+        """
+        all tie players should have the same number of main cards for potential
+        winning hand
+        """
+        logging.info(f"tie players {to_string(tie_players)}")
+        print("-------------------")
+        print("tie players")
+        for p in tie_players:
+            print(p)
+        print("-------------------")
+        main_cards_count = len(tie_players[0].main_cards)
+        for _ in range(main_cards_count):
+            cur_max_card = max([player.main_cards[-1] for player in tie_players])
+            remove_idx = []
+            for idx, player in enumerate(tie_players):
+                if (
+                    player.main_cards[-1].get_high_card_value()
+                    < cur_max_card.get_high_card_value()
+                ):
+                    remove_idx.append(idx)
+                else:
+                    player.main_cards.pop()
+            for idx in remove_idx:
+                del tie_players[idx]
+            if len(tie_players) == 1:
+                return tie_players
+
+        return self.find_tie_break_kicker_winners(tie_players)
 
     def dealing_to_board(self, dealing_type: CardDealAmount):
         self._deal_card(f"burn 1 for {dealing_type}", CardDealAmount.BURN)
         cards_dealt = self._deal_card(f"{dealing_type}", dealing_type)
         self.board.extend(cards_dealt)
 
-    def evaluating_players(self) -> dict[str, Player]:
-        logging.info('evaluating player hands')
-        logging.info(f'players: {to_string(self.players)}')
-        for player_id in self.players.keys():
-            player_cards = self.players[player_id].cards + self.get_board()
-            hand_result, _ = self.game_evaluator.evaluate_hand(player_cards)
-            self.players[player_id].hand_result = hand_result
-            logging.info(f'player_id: {player_id}, player_cards: {to_string(player_cards)}, hand result: {to_string(hand_result)}')
-        return self.players
-
-
     def get_board(self):
         if self._debug:
             logging.info(f"board cards - {[str(c) for c in self.board]}")
         return self.board
 
-    def find_winners(self):
-        '''TODO'''
-        pass
+    def find_winners(self) -> List[Player]:
+        logging.info("finding hand winner(s)")
+        self._evaluating_player_hands()
+        score_player_map = defaultdict(list)
+        max_score = HandResult.HIGH_CARD.value
+        for player in self.players.values():
+            player_score = player.hand_result.value
+            score_player_map[player_score].append(player)
+            max_score = max(max_score, player_score)
 
+        # tie breaking
+        if len(score_player_map[max_score]) > 1:
+            return self.find_tie_break_winners(score_player_map[max_score])
+
+        # only 1 winner in hand
+        return score_player_map[max_score]
