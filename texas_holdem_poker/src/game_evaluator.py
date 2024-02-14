@@ -148,9 +148,9 @@ class GameEvaluator:
         suite_cards_map = defaultdict(list)
         flush_suite = None
         for card in hand_cards:
-            suite_cards_map[card.suite].append(card)
-            if len(suite_cards_map[card.suite]) >= 5:
-                flush_suite = card.suite
+            suite_cards_map[card.suit].append(card)
+            if len(suite_cards_map[card.suit]) >= 5:
+                flush_suite = card.suit
 
         if flush_suite:
             flush_cards = suite_cards_map[flush_suite]

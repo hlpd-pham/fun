@@ -5,8 +5,9 @@ import pytest
 
 from card import CardDealAmount
 from game import Game
+from game_evaluator import HandResult
 
-from .fixtures.game_mock_data import mock_card_options
+from ..fixtures.game_mock_data import mock_card_options
 
 
 class TestGame:
@@ -52,7 +53,7 @@ class TestGame:
     @pytest.fixture(autouse=True)
     def setup_and_teardown(self):
         # Setup phase
-        logging.info("Setup before each test")
+        logging.info("TestGame setup")
         self.call_count = 0
         with patch("random.sample", side_effect=self.make_mock_cards()):
             self.game_instance: Game = Game(num_players=1, debug=True)
@@ -61,7 +62,7 @@ class TestGame:
         yield
 
         # Teardown phase - after yield
-        logging.info("Teardown after each test")
+        logging.info("TestGame teardown")
 
     def test_game_init(self):
         """expect initialization states with 1 player"""
@@ -120,3 +121,17 @@ class TestGame:
                 + mock_card_options[7:8]
                 + mock_card_options[9:10]
             )
+
+    def test_find_winners_only_1_player(self):
+        with patch("random.sample", side_effect=self.make_mock_cards()):
+            """expects 5 cards on board after river"""
+            for deal_type in [
+                CardDealAmount.FLOP,
+                CardDealAmount.TURN,
+                CardDealAmount.RIVER,
+            ]:
+                self.game_instance.dealing_to_board(deal_type)
+            winners = self.game_instance.find_winners()
+            winner = winners[0]
+            assert len(winners) == 1
+            assert isinstance(winner.hand_result, HandResult)

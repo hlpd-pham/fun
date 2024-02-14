@@ -1,3 +1,4 @@
+import emoji
 from aenum import Enum, NoAlias
 
 
@@ -11,45 +12,45 @@ class CardDealAmount(Enum):
     RIVER = 1
 
 
-class Suite(Enum):
-    _settings_ = NoAlias
+class Suit(Enum):
+    """enum values are string values of the emojis for each suite"""
 
-    HEART = 1
-    DIAMOND = 1
-    CLUB = 1
-    SPADE = 1
+    HEART = ":heart_suit:"
+    DIAMOND = ":diamond_suit:"
+    CLUB = ":club_suit:"
+    SPADE = ":spade_suit:"
 
 
 class Card:
 
-    def __init__(self, value: int = 1, suite: Suite = Suite.SPADE):
+    def __init__(self, value: int = 1, suit: Suit = Suit.SPADE):
         self.value: int = value
-        self.suite: Suite = suite
+        self.suit: Suit = suit
 
     def get_face_card_value(self):
         special_values = {
-            1: "Ace",
-            11: "Jack",
-            12: "Queen",
-            13: "King",
+            1: "A",
+            11: "J",
+            12: "Q",
+            13: "K",
         }
         return special_values.get(self.value, self.value)
 
     def get_card_value_suite(self):
-        return self.value, self.suite
+        return self.value, self.suit
 
     def get_high_card_value(self):
         return 14 if self.value == 1 else self.value
 
     def __hash__(self):
         # Hash combination of name and age
-        return hash((self.value, self.suite))
+        return hash((self.value, self.suit))
 
     def __eq__(self, other):
         if not isinstance(other, Card):
             # Don't attempt to compare against unrelated types
             return NotImplemented
-        return self.suite == other.suite and self.value == other.value
+        return self.suit == other.suit and self.value == other.value
 
     def __lt__(self, other):
         if not isinstance(other, Card):
@@ -70,4 +71,4 @@ class Card:
         return not self < other
 
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}({self.get_face_card_value()}, {self.suite})"
+        return emoji.emojize(f"{self.get_face_card_value()}{self.suit.value} ")

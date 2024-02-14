@@ -43,7 +43,13 @@ class Game:
         logging.info(f"cards type {type(self.deck[0])}")
         return cards_dealt
 
-    def _get_kickers(self, player_cards, main_cards):
+    def _get_kickers_from_hand(
+        self, player_cards: List[Card], main_cards: List[Card]
+    ) -> List[Card]:
+        if len(player_cards) != 7 or len(main_cards) > 5:
+            raise ValueError(
+                f"player_cards or main_cards not valid: {to_string(player_cards)}, {to_string(main_cards)}"
+            )
         # max cards allowed for a hand
         if len(main_cards) == 5:
             return []
@@ -63,7 +69,7 @@ class Game:
             hand_result, main_cards = self.game_evaluator.evaluate_hand(player_cards)
             self.players[player_id].hand_result = hand_result
             self.players[player_id].main_cards = main_cards
-            self.players[player_id].kickers = self._get_kickers(
+            self.players[player_id].kickers = self._get_kickers_from_hand(
                 player_cards, main_cards
             )
 
@@ -83,7 +89,7 @@ class Game:
             new_player.cards = player_cards
             self.players[new_player.id] = new_player
 
-    def find_tie_break_kicker_winners(self, tie_players: List[Player]):
+    def _find_tie_break_kicker_winners(self, tie_players: List[Player]):
         # no more kicker to tie break
         if not tie_players[0].kickers:
             return tie_players
@@ -103,21 +109,16 @@ class Game:
 
         # still haven't figured out winner
         if len(highest_kicker_card_map[highest_kicker_value]) > 1:
-            return self.find_tie_break_kicker_winners(tie_players)
+            return self._find_tie_break_kicker_winners(tie_players)
 
         return tie_players
 
-    def find_tie_break_winners(self, tie_players: List[Player]) -> List[Player]:
+    def _find_tie_break_winners(self, tie_players: List[Player]) -> List[Player]:
         """
         all tie players should have the same number of main cards for potential
         winning hand
         """
         logging.info(f"tie players {to_string(tie_players)}")
-        print("-------------------")
-        print("tie players")
-        for p in tie_players:
-            print(p)
-        print("-------------------")
         main_cards_count = len(tie_players[0].main_cards)
         for _ in range(main_cards_count):
             cur_max_card = max([player.main_cards[-1] for player in tie_players])
@@ -135,7 +136,7 @@ class Game:
             if len(tie_players) == 1:
                 return tie_players
 
-        return self.find_tie_break_kicker_winners(tie_players)
+        return self._find_tie_break_kicker_winners(tie_players)
 
     def dealing_to_board(self, dealing_type: CardDealAmount):
         self._deal_card(f"burn 1 for {dealing_type}", CardDealAmount.BURN)
@@ -159,7 +160,7 @@ class Game:
 
         # tie breaking
         if len(score_player_map[max_score]) > 1:
-            return self.find_tie_break_winners(score_player_map[max_score])
+            return self._find_tie_break_winners(score_player_map[max_score])
 
         # only 1 winner in hand
         return score_player_map[max_score]
