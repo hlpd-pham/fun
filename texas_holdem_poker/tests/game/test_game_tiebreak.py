@@ -35,7 +35,9 @@ class TestGameTieBreak:
 
     def test_tiebreak_scenarios(self):
         for scenario in self.test_scenarios:
-            logging.info(f"Tiebreak scenario: {scenario['Title']}")
+            logging.info(
+                f"Tiebreak scenario: {scenario['Title']}----------------------"
+            )
             players = parse_players(scenario["Players"])
             for idx, player in enumerate(players):
                 self.game_instance.players[idx] = player
@@ -44,3 +46,6 @@ class TestGameTieBreak:
             winners = self.game_instance.find_winners()
             winner_ids = [player.id for player in winners]
             assert winner_ids == scenario["Winners"]
+            logging.info(
+                f"------------------------------------------------------------"
+            )
