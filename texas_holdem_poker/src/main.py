@@ -13,7 +13,7 @@ logging.basicConfig(
 
 
 def run():
-    num_players = 3
+    num_players = 5
     print(f"start game for {num_players} players")
     game = Game(num_players=num_players, debug=True)
 

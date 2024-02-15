@@ -68,7 +68,9 @@ class Game:
             player_cards = self.players[player_id].cards + self.board
             hand_result, main_cards = self.game_evaluator.evaluate_hand(player_cards)
             self.players[player_id].hand_result = hand_result
-            self.players[player_id].main_cards = main_cards
+            self.players[player_id].main_cards = sorted(
+                main_cards, key=lambda card: card.get_high_card_value()
+            )
             self.players[player_id].kickers = self._get_kickers_from_hand(
                 player_cards, main_cards
             )
@@ -92,23 +94,23 @@ class Game:
         if not tie_players[0].kickers:
             return tie_players
 
-        highest_kicker_card = Card(0, "")
+        highest_kicker_card_value = 0
         kicker_player_map = defaultdict(list)
         for i in range(len(tie_players)):
             player_highest_kicker = tie_players[i].kickers[-1]
-            highest_kicker_card = max(
-                player_highest_kicker,
-                highest_kicker_card,
-                key=lambda card: card.get_high_card_value(),
+            highest_kicker_card_value = max(
+                player_highest_kicker.get_high_card_value(), highest_kicker_card_value
             )
-            kicker_player_map[player_highest_kicker].append(tie_players[i])
+            kicker_player_map[player_highest_kicker.get_high_card_value()].append(
+                tie_players[i]
+            )
             tie_players[i].kickers.pop()
 
         # still haven't figured out winner
-        if len(kicker_player_map[highest_kicker_card]) > 1:
+        if len(kicker_player_map[highest_kicker_card_value]) > 1:
             return self._find_tie_break_kicker_winners(tie_players)
 
-        return kicker_player_map[highest_kicker_card]
+        return kicker_player_map[highest_kicker_card_value]
 
     def _find_tie_break_winners(self, tie_players: List[Player]) -> List[Player]:
         """
@@ -116,24 +118,30 @@ class Game:
         winning hand
         """
         logging.info(f"tie players {to_string(tie_players)}")
-        main_cards_count = len(tie_players[0].main_cards)
-        for _ in range(main_cards_count):
-            cur_max_card = max([player.main_cards[-1] for player in tie_players])
-            remove_idx = []
-            for idx, player in enumerate(tie_players):
-                if (
-                    player.main_cards[-1].get_high_card_value()
-                    < cur_max_card.get_high_card_value()
-                ):
-                    remove_idx.append(idx)
-                else:
-                    player.main_cards.pop()
-            for idx in remove_idx:
-                del tie_players[idx]
-            if len(tie_players) == 1:
-                return tie_players
 
-        return self._find_tie_break_kicker_winners(tie_players)
+        # need to tie break by kickers
+        if not tie_players[0].main_cards:
+            return self._find_tie_break_kicker_winners(tie_players)
+
+        highest_main_card_value = 0
+        main_card_player_map = defaultdict(list)
+        for i in range(len(tie_players)):
+            player_highest_main = tie_players[i].main_cards[-1]
+            highest_main_card_value = max(
+                player_highest_main.get_high_card_value(),
+                highest_main_card_value,
+            )
+            if player_highest_main.value not in main_card_player_map:
+                main_card_player_map[player_highest_main.get_high_card_value()].append(
+                    tie_players[i]
+                )
+            tie_players[i].main_cards.pop()
+
+        # still haven't figured out winner
+        if len(main_card_player_map[highest_main_card_value]) > 1:
+            return self._find_tie_break_winners(tie_players)
+
+        return main_card_player_map[highest_main_card_value]
 
     def dealing_to_board(self, dealing_type: CardDealAmount):
         self._deal_card(f"burn 1 for {dealing_type}", CardDealAmount.BURN)

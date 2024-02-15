@@ -23,8 +23,8 @@ class Player:
 
     def __str__(self):
         return (
-            f"Player(id:{self.id}, "
-            # f"Player("
+            # f"Player(id:{self.id}, "
+            f"Player("
             + f"hand_result: {self.hand_result}, "
             + f"cards:{to_string(self.cards)}, "
             + f"main_cards: {to_string(self.main_cards)}, "
