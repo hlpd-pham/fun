@@ -25,7 +25,7 @@ class Player:
         return (
             # f"Player(id:{self.id}, "
             f"Player("
-            + f"hand_result: {self.hand_result}, "
+            + f"{self.hand_result} - {self.hand_result.value}, "
             + f"cards:{to_string(self.cards)}, "
             + f"main_cards: {to_string(self.main_cards)}, "
             + f"kickers: {to_string(self.kickers)})"

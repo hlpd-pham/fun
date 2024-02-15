@@ -117,8 +117,6 @@ class Game:
         all tie players should have the same number of main cards for potential
         winning hand
         """
-        logging.info(f"tie players {to_string(tie_players)}")
-
         # need to tie break by kickers
         if not tie_players[0].main_cards:
             return self._find_tie_break_kicker_winners(tie_players)
@@ -131,11 +129,14 @@ class Game:
                 player_highest_main.get_high_card_value(),
                 highest_main_card_value,
             )
-            if player_highest_main.value not in main_card_player_map:
-                main_card_player_map[player_highest_main.get_high_card_value()].append(
-                    tie_players[i]
-                )
+            main_card_player_map[player_highest_main.get_high_card_value()].append(
+                tie_players[i]
+            )
             tie_players[i].main_cards.pop()
+
+        logging.info(
+            f"main_card_player_map: {to_string(main_card_player_map)}, highest high card: {highest_main_card_value}"
+        )
 
         # still haven't figured out winner
         if len(main_card_player_map[highest_main_card_value]) > 1:

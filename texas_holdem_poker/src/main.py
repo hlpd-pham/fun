@@ -34,4 +34,6 @@ def run():
         print(to_string(w))
 
 
-run()
+for _ in range(10):
+    run()
+    print("--------------------------------------------")
