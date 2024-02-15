@@ -556,7 +556,7 @@ def test_royal_flush_sad_path():
 
 def test_evaluating_hand_bad_input():
     with pytest.raises(
-        ValueError, match="there must be 7 cards in hand for evaluation"
+        ValueError, match="there must be 7 unique cards in hand for evaluation"
     ):
         GameEvaluator().evaluate_hand([])
 
@@ -572,7 +572,7 @@ def test_evaluating_hand_bad_input_duplicate_cards():
         Card(1, Suit.CLUB),
     ]
     with pytest.raises(
-        ValueError, match="there must be 7 cards in hand for evaluation"
+        ValueError, match="there must be 7 unique cards in hand for evaluation"
     ):
         GameEvaluator().evaluate_hand(hand_cards)
 

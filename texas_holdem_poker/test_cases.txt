@@ -1,44 +1,26 @@
 start game for 2 players
 board
-['Card(4, Suite.DIAMOND)', 'Card(4, Suite.CLUB)', 'Card(Jack, Suite.CLUB)', 'Card(10, Suite.CLUB)', 'Card(4, Suite.SPADE)']
+['8♠️ ', '10♥️ ', '8♦️ ', '3♦️ ', '5♦️ ']
 
 hand results
-Player(id:e80ca1b4-5642-4e68-90c1-b6559d8dc884
-	cards:['Card(6, Suite.DIAMOND)', 'Card(King, Suite.DIAMOND)']
+Player(id:60f8c4b9-a7b0-47a2-8149-f2cc60e91af5
 	hand_result: HandResult.THREE_OF_A_KIND
-	best_five: ['Card(4, Suite.DIAMOND)', 'Card(4, Suite.CLUB)', 'Card(4, Suite.SPADE)'])
-	kickers: ['Card(Jack, Suite.CLUB)', 'Card(King, Suite.DIAMOND)']
-
-Player(id:63e18f60-9441-498a-82ed-8d5dd1ac6d69
-	cards:['Card(7, Suite.HEART)', 'Card(6, Suite.SPADE)']
+	cards:['8♥️ ', '2♣️ ']
+	main_cards: ['8♥️ ', '8♠️ ', '8♦️ '])
+	kickers: ['5♦️ ', '10♥️ ']
+Player(id:a88e8f0e-7637-479e-b6eb-ee852fe20b74
 	hand_result: HandResult.THREE_OF_A_KIND
-	best_five: ['Card(4, Suite.DIAMOND)', 'Card(4, Suite.CLUB)', 'Card(4, Suite.SPADE)'])
-	kickers: ['Card(10, Suite.CLUB)', 'Card(Jack, Suite.CLUB)']
-
+	cards:['8♣️ ', 'J♠️ ']
+	main_cards: ['8♣️ ', '8♠️ ', '8♦️ '])
+	kickers: ['10♥️ ', 'J♠️ ']
 winners
--------------------
-tie players
-Player(id:e80ca1b4-5642-4e68-90c1-b6559d8dc884
-	cards:['Card(6, Suite.DIAMOND)', 'Card(King, Suite.DIAMOND)']
+Player(id:60f8c4b9-a7b0-47a2-8149-f2cc60e91af5
 	hand_result: HandResult.THREE_OF_A_KIND
-	best_five: ['Card(4, Suite.DIAMOND)', 'Card(4, Suite.CLUB)', 'Card(4, Suite.SPADE)'])
-	kickers: ['Card(Jack, Suite.CLUB)', 'Card(King, Suite.DIAMOND)']
-
-Player(id:63e18f60-9441-498a-82ed-8d5dd1ac6d69
-	cards:['Card(7, Suite.HEART)', 'Card(6, Suite.SPADE)']
+	cards:['8♥️ ', '2♣️ ']
+	main_cards: [])
+	kickers: ['5♦️ ']
+Player(id:a88e8f0e-7637-479e-b6eb-ee852fe20b74
 	hand_result: HandResult.THREE_OF_A_KIND
-	best_five: ['Card(4, Suite.DIAMOND)', 'Card(4, Suite.CLUB)', 'Card(4, Suite.SPADE)'])
-	kickers: ['Card(10, Suite.CLUB)', 'Card(Jack, Suite.CLUB)']
-
--------------------
-Player(id:e80ca1b4-5642-4e68-90c1-b6559d8dc884
-	cards:['Card(6, Suite.DIAMOND)', 'Card(King, Suite.DIAMOND)']
-	hand_result: HandResult.THREE_OF_A_KIND
-	best_five: [])
-	kickers: ['Card(Jack, Suite.CLUB)']
-
-Player(id:63e18f60-9441-498a-82ed-8d5dd1ac6d69
-	cards:['Card(7, Suite.HEART)', 'Card(6, Suite.SPADE)']
-	hand_result: HandResult.THREE_OF_A_KIND
-	best_five: [])
-	kickers: ['Card(10, Suite.CLUB)']
+	cards:['8♣️ ', 'J♠️ ']
+	main_cards: [])
+	kickers: ['10♥️ ']
