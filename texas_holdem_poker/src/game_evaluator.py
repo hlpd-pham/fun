@@ -24,12 +24,20 @@ class GameEvaluator:
     """This class always assume player cards have 7 cards to make it simple"""
 
     def _get_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
+        """find the highest pair"""
         value_cards_map = defaultdict(list)
+        pair_values = set()
         for c in all_player_cards:
-            value_cards_map[c.value].append(c)
-            if len(value_cards_map[c.value]) == 2:
-                return value_cards_map[c.value]
-        return []
+            value_cards_map[c.get_high_card_value()].append(c)
+            if len(value_cards_map[c.get_high_card_value()]) >= 2:
+                pair_values.add(c.get_high_card_value())
+
+        if not pair_values:
+            return []
+
+        pair_values = sorted(list(pair_values))
+        highest_pair_value = pair_values[-1]
+        return value_cards_map[highest_pair_value]
 
     def _get_two_pair_cards(self, all_player_cards: List[Card]) -> List[Card]:
         hand_cards = sorted(all_player_cards.copy())
@@ -47,9 +55,9 @@ class GameEvaluator:
     def _get_three_of_a_kind_cards(self, all_player_cards: List[Card]) -> List[Card]:
         value_cards_map = defaultdict(list)
         for c in all_player_cards:
-            value_cards_map[c.value].append(c)
-            if len(value_cards_map[c.value]) == 3:
-                return value_cards_map[c.value]
+            value_cards_map[c.get_high_card_value()].append(c)
+            if len(value_cards_map[c.get_high_card_value()]) == 3:
+                return value_cards_map[c.get_high_card_value()]
         return []
 
     def _get_straight_cards(

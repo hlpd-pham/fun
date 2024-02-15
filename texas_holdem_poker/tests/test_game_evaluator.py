@@ -18,6 +18,24 @@ def test_get_one_pair_happy_path_return_2_cards():
     assert len(result) == 2
 
 
+def test_get_one_pair_happy_path_return_higher_pair():
+    hand_cards = [
+        Card(2, Suit.HEART),
+        Card(2, Suit.CLUB),
+        Card(9, Suit.HEART),
+        Card(9, Suit.DIAMOND),
+        Card(4, Suit.HEART),
+        Card(5, Suit.HEART),
+        Card(6, Suit.HEART),
+    ]
+    expected = [
+        Card(9, Suit.HEART),
+        Card(9, Suit.DIAMOND),
+    ]
+    result = GameEvaluator()._get_pair_cards(hand_cards)
+    assert expected == result
+
+
 def test_get_one_pair_sad_path_return_0_cards():
 
     hand_cards = [

@@ -112,6 +112,31 @@ class Game:
 
         return kicker_player_map[highest_kicker_card_value]
 
+    def _find_tie_break_winners_straight(
+        self, tie_players: List[Player]
+    ) -> List[Player]:
+        broadway_card_values = set([10, 11, 12, 13, 1])
+        broadway_players = []
+        straight_high_map = defaultdict(list)
+        highest_straight_card = 0
+        for player in tie_players:
+            player_straight_card_values = set(
+                [card.value for card in player.main_cards]
+            )
+            if player_straight_card_values == broadway_card_values:
+                broadway_players.append(player)
+            else:
+                player_highest_straight_card_value = player.main_cards[-1].value
+                straight_high_map[player_highest_straight_card_value].append(player)
+                highest_straight_card = max(
+                    highest_straight_card, player_highest_straight_card_value
+                )
+
+        if broadway_players:
+            return broadway_players
+
+        return straight_high_map[highest_straight_card]
+
     def _find_tie_break_winners(self, tie_players: List[Player]) -> List[Player]:
         """
         all tie players should have the same number of main cards for potential
@@ -120,6 +145,9 @@ class Game:
         # need to tie break by kickers
         if not tie_players[0].main_cards:
             return self._find_tie_break_kicker_winners(tie_players)
+
+        if tie_players[0].hand_result == HandResult.STRAIGHT:
+            return self._find_tie_break_winners_straight(tie_players)
 
         highest_main_card_value = 0
         main_card_player_map = defaultdict(list)
