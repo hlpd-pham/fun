@@ -14,6 +14,7 @@ Player(HandResult.FULL_HOUSE - 7, cards:['A♣️ ', '9♠️ '], main_cards: ['
 """
 
 full_house_higher_pair = {
+    "Title": "Fullhouse Higher Pair",
     "Players": [
         {
             "ID": "Player1",

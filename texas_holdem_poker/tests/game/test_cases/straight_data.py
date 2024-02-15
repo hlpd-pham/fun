@@ -1,4 +1,5 @@
 higher_straight_normal = {
+    "Title": "Higher Straight Normal",
     "Players": [
         {
             "ID": "Player1",
@@ -26,6 +27,7 @@ higher_straight_normal = {
 }
 
 higher_straight_broadway = {
+    "Title": "Higher Straight Broadway",
     "Players": [
         {
             "ID": "Player1",

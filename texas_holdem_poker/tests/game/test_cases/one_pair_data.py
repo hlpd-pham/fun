@@ -1,35 +1,5 @@
-template = {
-    "Players": [
-        {
-            "ID": "Player1",
-            "MainCards": [],
-            "Kickers": [],
-            "InitialDeal": [
-                {"value": "", "suit": ""},
-                {"value": "", "suit": ""},
-            ],
-        },
-        {
-            "ID": "Player2",
-            "MainCards": [],
-            "Kickers": [],
-            "InitialDeal": [
-                {"value": "", "suit": ""},
-                {"value": "", "suit": ""},
-            ],
-        },
-    ],
-    "Board": [
-        {"value": "", "suit": ""},
-        {"value": "", "suit": ""},
-        {"value": "", "suit": ""},
-        {"value": "", "suit": ""},
-        {"value": "", "suit": ""},
-    ],
-    "Winners": [""],
-}
-
 one_pair_1 = {
+    "Title": "Higher Pair 1",
     "Players": [
         {
             "ID": "Player1",
@@ -61,6 +31,7 @@ one_pair_1 = {
 }
 
 one_pair_2 = {
+    "Title": "Higher Pair 2",
     "Players": [
         {
             "ID": "Player1",

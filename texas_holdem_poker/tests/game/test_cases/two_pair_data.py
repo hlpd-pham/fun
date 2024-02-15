@@ -7,6 +7,7 @@ board
 """
 
 two_pair_1_winner = {
+    "Title": "Higher 2 Pairs",
     "Players": [
         {
             "ID": "Player1",
