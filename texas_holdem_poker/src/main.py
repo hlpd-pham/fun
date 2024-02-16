@@ -27,13 +27,11 @@ def run():
     print("hand results")
     game._evaluating_player_hands()
     for player in game.players.values():
-        print(player)
+        print(f"id:{player.id}, {to_string(player.cards)}, {player.hand_result}")
 
     print("winners")
     for w in game.find_winners():
-        print(to_string(w))
+        print(f"id:{w.id}, {to_string(w.cards)}, {w.hand_result}")
 
 
-for _ in range(10):
-    run()
-    print("--------------------------------------------")
+run()

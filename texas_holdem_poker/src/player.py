@@ -15,7 +15,7 @@ class Player:
         kickers=[],
         hand_result=HandResult.HIGH_CARD,
     ):
-        self.id = id if id else uuid.uuid4()
+        self.id = id if id is not None else uuid.uuid4()
         self.cards = cards
         self.hand_result: HandResult = hand_result
         self.main_cards: List[Card] = main_cards

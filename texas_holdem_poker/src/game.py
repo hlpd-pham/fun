@@ -80,8 +80,8 @@ class Game:
 
     def _poplulate_players(self, num_players) -> None:
         logging.info(f"dealing cards to {num_players} players")
-        for _ in range(num_players):
-            new_player = Player()
+        for idx in range(num_players):
+            new_player = Player(id=idx)
             player_cards = self._deal_card(
                 f"dealing cards for player {new_player.id}", CardDealAmount.PLAYER
             )
