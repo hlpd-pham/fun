@@ -1,15 +1,14 @@
 ## Calculate Total Spending from Different Types of Statements
 
-### Prerequisite
+### Setup
 
-`pip3 install PyPDF2 pandas argparse`
+`python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt`
 
 ## Create Report from Amex PDF Statement
 
 `python runner.py -f sample_file.pdf`
 
 ## Create Report from CSV
-
 
 ```bash
 usage: activity.py [-h] -c CSV -t {amex,chase}
@@ -22,4 +21,3 @@ options:
   -t {amex,chase}, --type {amex,chase}
                         CC provider type
 ```
-
