@@ -33,12 +33,14 @@ def create_chase_report(df):
     costco = chase_filtered[costco_mask]
     amzn = chase_filtered[
         chase_filtered.Description.apply(
-            lambda x: any(element in x for element in ["AMZN", "Amazon"])
+            lambda x: any(element in x for element in ["AMZN", "Amazon", "AMAZON"])
         )
     ]
     others = chase_filtered[
         ~chase_filtered.Description.apply(
-            lambda x: any(element in x for element in ["AMZN", "Amazon", "COSTCO"])
+            lambda x: any(
+                element in x for element in ["AMZN", "Amazon", "COSTCO", "AMAZON"]
+            )
         )
     ]
 
