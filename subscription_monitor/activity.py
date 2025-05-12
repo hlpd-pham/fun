@@ -1,5 +1,6 @@
 import argparse
 
+import numpy as np
 import pandas as pd
 
 AMEX = "amex"
@@ -9,17 +10,29 @@ ALLOWED_CC_TYPES = [AMEX, CHASE, CITI]
 ROW_SEPARATORS = "------------------------------------------------------------"
 
 
+def print_df(df, cols):
+    longest_row = np.max(df.apply(lambda row: len(row["Description"]), axis=1))
+    for _, row in df.iterrows():
+        for c in cols:
+            if c == "Description":
+                print(f"{row[c]:<{longest_row}}", end=" ")
+            else:
+                print(row[c], end=" ")
+        print()
+
+
 def create_amex_report(df):
     pattern = r"MOBILE PAYMENT - THANK YOU"
     mask = df.Description.str.contains(pattern, regex=True)
+    columns = ["Date", "Description", "Amount"]
     df_filtered = df[~mask]
     large = df_filtered[df_filtered.Amount > 300]
     monthly_spend = df_filtered[df_filtered.Amount <= 300]
 
     print(f"{ROW_SEPARATORS}\nLarge Transactions (> 300): {sum(large.Amount)}")
-    print(large)
+    print_df(large, columns)
     print(f"{ROW_SEPARATORS}\nMonthly Spending (<= 300): {sum(monthly_spend.Amount)}")
-    print(monthly_spend)
+    print_df(monthly_spend, columns)
 
 
 def create_chase_report(df):
@@ -45,11 +58,11 @@ def create_chase_report(df):
     ]
 
     print(f"{ROW_SEPARATORS}\nCOSTCO: {sum(costco.Amount):.2f}")
-    print(costco)
+    print_df(costco, columns)
     print(f"{ROW_SEPARATORS}\nAMZN: {sum(amzn.Amount):.2f}")
-    print(amzn)
+    print_df(amzn, columns)
     print(f"{ROW_SEPARATORS}\nOthers: {sum(others.Amount):.2f}")
-    print(others)
+    print_df(others, columns)
 
 
 def create_citi_report(df):
@@ -64,9 +77,9 @@ def create_citi_report(df):
     others = citi_filtered[~costco_mask]
 
     print(f"{ROW_SEPARATORS}\nCOSTCO: {sum(costco.Debit):.2f}")
-    print(costco)
+    print_df(costco, columns)
     print(f"{ROW_SEPARATORS}\nOthers: {sum(others.Debit):.2f}")
-    print(others)
+    print_df(others, columns)
 
 
 def create_report(csv_file, cc_type):
